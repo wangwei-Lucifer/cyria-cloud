@@ -1,0 +1,48 @@
+version: '2'
+services:
+  auth-service:
+    environment:
+      CONFIG_SERVICE_PASSWORD: admin
+      NOTIFICATION_SERVICE_PASSWORD: admin
+      STATISTICS_SERVICE_PASSWORD: admin
+      ACCOUNT_SERVICE_PASSWORD: admin
+      DASHBOARD_SERVICE_PASSWORD: admin
+      MONGODB_PASSWORD: admin
+    build: auth-service
+    image: kunteng/cyria-auth-service
+    restart: always
+    ports:
+      - 5000:5000
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  monitoring:
+    environment:
+      CONFIG_SERVICE_PASSWORD: admin
+    build: monitoring
+    image: kunteng/cyria-monitoring
+    restart: always
+    ports:
+      - 9000:8080
+      - 8989:8989
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  dashboard-service:
+    environment:
+      CONFIG_SERVICE_PASSWORD: admin
+      MONGODB_PASSWORD: admin
+      DASHBOARD_SERVICE_PASSWORD: admin
+    build: dashboard-service
+    image: kunteng/cyria-dashboard-service
+    restart: always
+    ports:
+      - 10000:10000
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
