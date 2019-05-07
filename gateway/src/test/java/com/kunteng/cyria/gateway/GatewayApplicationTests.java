@@ -1,4 +1,4 @@
-package com.piggymetrics.gateway;
+package com.kunteng.cyria.gateway;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

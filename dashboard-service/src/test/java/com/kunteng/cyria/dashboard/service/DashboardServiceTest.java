@@ -1,7 +1,7 @@
-package com.piggymetrics.dashboard.service;
+package com.kunteng.cyria.dashboard.service;
 
-import com.piggymetrics.dashboard.domain.*;
-import com.piggymetrics.dashboard.repository.DashboardRepository;
+import com.kunteng.cyria.dashboard.domain.*;
+import com.kunteng.cyria.dashboard.repository.DashboardRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;

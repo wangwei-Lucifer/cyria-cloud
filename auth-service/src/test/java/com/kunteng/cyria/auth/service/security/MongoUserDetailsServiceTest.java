@@ -1,7 +1,7 @@
-package com.piggymetrics.auth.service.security;
+package com.kunteng.cyria.auth.service.security;
 
-import com.piggymetrics.auth.domain.User;
-import com.piggymetrics.auth.repository.UserRepository;
+import com.kunteng.cyria.auth.domain.User;
+import com.kunteng.cyria.auth.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;

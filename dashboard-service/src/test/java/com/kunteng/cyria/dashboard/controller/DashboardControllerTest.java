@@ -1,10 +1,10 @@
-package com.piggymetrics.dashboard.controller;
+package com.kunteng.cyria.dashboard.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
-import com.piggymetrics.dashboard.DashboardApplication;
-import com.piggymetrics.dashboard.domain.*;
-import com.piggymetrics.dashboard.service.DashboardService;
+import com.kunteng.cyria.dashboard.DashboardApplication;
+import com.kunteng.cyria.dashboard.domain.*;
+import com.kunteng.cyria.dashboard.service.DashboardService;
 import com.sun.security.auth.UserPrincipal;
 import org.junit.Before;
 import org.junit.Test;

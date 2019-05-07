@@ -1,7 +1,7 @@
-package com.piggymetrics.auth.repository;
+package com.kunteng.cyria.auth.repository;
 
-import com.piggymetrics.auth.AuthApplication;
-import com.piggymetrics.auth.domain.User;
+import com.kunteng.cyria.auth.AuthApplication;
+import com.kunteng.cyria.auth.domain.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

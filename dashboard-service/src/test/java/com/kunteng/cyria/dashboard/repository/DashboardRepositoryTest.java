@@ -1,7 +1,7 @@
-package com.piggymetrics.dashboard.repository;
+package com.kunteng.cyria.dashboard.repository;
 
-import com.piggymetrics.dashboard.DashboardApplication;
-import com.piggymetrics.dashboard.domain.Dashboard;
+import com.kunteng.cyria.dashboard.DashboardApplication;
+import com.kunteng.cyria.dashboard.domain.Dashboard;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
