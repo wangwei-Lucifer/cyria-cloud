@@ -1,7 +1,17 @@
 package com.kunteng.cyria.dashboard.service;
 
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Base64;
+import java.util.Base64.Decoder;
 
+import javax.imageio.ImageIO;
+
+import org.bson.BasicBSONDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kunteng.cyria.dashboard.domain.Config;
 import com.kunteng.cyria.dashboard.domain.Dashboard;
@@ -18,9 +31,11 @@ import com.kunteng.cyria.dashboard.domain.Translation;
 import com.kunteng.cyria.dashboard.repository.DashboardRepository;
 import com.kunteng.cyria.dashboard.repository.PublishedRepository;
 import com.kunteng.cyria.dashboard.repository.TemplateRepository;
+import com.kunteng.cyria.dashboard.utils.Utils;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONArray;
+import sun.misc.BASE64Decoder;
 
 @Service
 public class DashboardServiceImpl implements DashboardService {
@@ -117,8 +132,42 @@ public class DashboardServiceImpl implements DashboardService {
 		}
 		dashboardRepository.save(dashboard);
 	}
+	
+/*	private static String uploadFile(byte[] file, String filePath, String fileName) throws Exception {
+		File targetFile = new File(filePath);
+		if(!targetFile.exists()) {
+			targetFile.mkdirs();
+		}
+		
+		FileOutputStream out = new FileOutputStream(filePath + fileName);
+		out.write(file);
+		out.flush();
+		out.close();
+		
+		return filePath + fileName;
+	}
+	
+	private  String createImage(String srcPath, String id) throws Exception {
+		if(srcPath == null) {
+			return null;
+		}
+		File path = null;
+		try {
+			path = new File(ResourceUtils.getURL("classpath:").getPath());
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		BASE64Decoder decoder = new BASE64Decoder();
+		byte[] decoderBytes = decoder.decodeBuffer(srcPath.split(",")[1]);
+		
+		String filePath = path.getAbsolutePath() + "static/images/dashboards/";
+		String fileName = id + ".png";
+		return uploadFile(decoderBytes,filePath, fileName);
+	}*/
 
-	public void updateDashboardById(String id, String db){
+	public void updateDashboardById(String id, String db) throws Exception{
 		JSONObject jso = JSONObject.fromObject(db);
 		Dashboard dashboard = dashboardRepository.findByHash(id);
 		if(jso.has("config")) {
@@ -131,7 +180,10 @@ public class DashboardServiceImpl implements DashboardService {
 			dashboard.setWidget(widget);
 		}
 		if(jso.has("imgData")) {
-			dashboard.setImgData(jso.getString("imgData"));
+			//String path = ResourceUtils.getURL("classpath:").getPath();
+			String imgUrl = Utils.createImage(jso.getString("imgData"),id);
+	//		dashboard.setImgData(jso.getString("imgData"));
+			dashboard.setImgUrl(imgUrl);
 		}
 		dashboardRepository.save(dashboard);
 	}
@@ -139,6 +191,25 @@ public class DashboardServiceImpl implements DashboardService {
 	public Published getPublishedById(String id) {
 		Published published = publishedRepository.findByHash(id);
 		return published;
+	}
+
+	@Override
+	public Object uploadImage(String id, MultipartFile file) throws IllegalStateException, IOException {
+		String hash = null;
+		if(id.isEmpty()) {
+			hash = "anony";
+		}else {
+			hash = id;
+		}
+		
+		String fileName = file.getOriginalFilename();
+		String suffixName = fileName.substring(fileName.lastIndexOf("."));
+		String hashName = Utils.hash(fileName)+suffixName;
+		
+		if(suffixName.equalsIgnoreCase(".jpg") || suffixName.equalsIgnoreCase(".jpeg") || suffixName.equalsIgnoreCase(".png")) {
+			file.transferTo(new File(Utils.getRootPath() + Utils.getImagesPath() + "/" + id + "/img" + hashName));
+		}
+		return Utils.getImagesPath()+ "/" + id + "/img" + hashName;
 	}
 
 }

@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -41,7 +44,7 @@ public class DashboardController {
 	}
 	
 	@RequestMapping(path = "/dashboards/{id}", method = RequestMethod.PUT)
-	public void updateDashboardById(@PathVariable String id, @RequestBody String db) {
+	public void updateDashboardById(@PathVariable String id, @RequestBody String db) throws Exception {
 		dashboardService.updateDashboardById(id, db);
 	}
 	
@@ -53,5 +56,10 @@ public class DashboardController {
 	@RequestMapping(path= "/publish/{id}", method = RequestMethod.GET)
 	public Published getPublishedById(@PathVariable String id) {
 		return dashboardService.getPublishedById(id);
+	}
+	
+	@RequestMapping(path= "/upload/image/{id}", method = RequestMethod.POST)
+	public Object uploadImage(@PathVariable String id, @RequestBody MultipartFile file) throws IllegalStateException, IOException {
+		return dashboardService.uploadImage(id, file);
 	}
 }
