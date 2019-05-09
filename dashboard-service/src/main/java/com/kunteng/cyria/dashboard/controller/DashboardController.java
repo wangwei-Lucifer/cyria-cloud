@@ -59,7 +59,7 @@ public class DashboardController {
 	}
 	
 	@RequestMapping(path= "/upload/image/{id}", method = RequestMethod.POST)
-	public Object uploadImage(@PathVariable String id, @RequestBody MultipartFile file) throws IllegalStateException, IOException {
-		return dashboardService.uploadImage(id, file);
+	public Object uploadImage(@PathVariable String id, @RequestBody MultipartFile files) throws IllegalStateException, IOException {
+		return dashboardService.uploadImage(id, files);
 	}
 }

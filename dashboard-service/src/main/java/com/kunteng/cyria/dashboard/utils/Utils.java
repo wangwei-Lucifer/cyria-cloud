@@ -3,21 +3,24 @@ package com.kunteng.cyria.dashboard.utils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.springframework.util.ResourceUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import sun.misc.BASE64Decoder;
 
 public class Utils {
 
-	private static final String dashboardPath = "/static/images/dashboards/";
+	private static final String dashboardPath = "/static/upload/dashboards";
 	
-	private static final String imagesPath = "/static/upload/dashboard/";
+	private static final String imagesPath = "/static/upload/images";
 	
 	public static String getRootPath() throws FileNotFoundException {
 		File rootPath = new File(ResourceUtils.getURL("classpath:").getPath());
+		//File rootPath = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX);
 		return rootPath.getAbsolutePath();
 	}
 	
@@ -76,5 +79,35 @@ public class Utils {
 		String filePath = getRootPath() + dashboardPath;
 		String fileName = id + ".png";
 		return uploadFile(decoderBytes,filePath, fileName);
+	}
+	
+	public static Object uploadImage(String id, MultipartFile files) throws IllegalStateException, IOException {
+		String hash = null;
+		if(id.isEmpty()) {
+			hash = "anony";
+		}else {
+			hash = id;
+		}
+		
+		String fileName = files.getOriginalFilename();
+		String suffixName = fileName.substring(fileName.lastIndexOf("."));
+		String hashName = Utils.hash(fileName)+suffixName;
+		
+		if(suffixName.equalsIgnoreCase(".jpg") || suffixName.equalsIgnoreCase(".jpeg") || suffixName.equalsIgnoreCase(".png")) {
+			File uploadPath = new File(getRootPath() + getImagesPath() + id + "/img/");
+			File uploadFile = new File(getRootPath() + getImagesPath() + id + "/img/" ,hashName);
+			if(!uploadPath.exists()) {
+				uploadPath.mkdirs();
+			}
+			if(!uploadFile.exists()) {
+				uploadFile.createNewFile();
+			}
+			
+			files.transferTo(uploadFile);
+			return getImagesPath()+ "/" + id + "/img/" + hashName;
+		}else {
+			return null;
+		}
+		
 	}
 }

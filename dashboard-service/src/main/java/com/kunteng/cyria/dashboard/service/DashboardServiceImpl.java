@@ -132,40 +132,6 @@ public class DashboardServiceImpl implements DashboardService {
 		}
 		dashboardRepository.save(dashboard);
 	}
-	
-/*	private static String uploadFile(byte[] file, String filePath, String fileName) throws Exception {
-		File targetFile = new File(filePath);
-		if(!targetFile.exists()) {
-			targetFile.mkdirs();
-		}
-		
-		FileOutputStream out = new FileOutputStream(filePath + fileName);
-		out.write(file);
-		out.flush();
-		out.close();
-		
-		return filePath + fileName;
-	}
-	
-	private  String createImage(String srcPath, String id) throws Exception {
-		if(srcPath == null) {
-			return null;
-		}
-		File path = null;
-		try {
-			path = new File(ResourceUtils.getURL("classpath:").getPath());
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		BASE64Decoder decoder = new BASE64Decoder();
-		byte[] decoderBytes = decoder.decodeBuffer(srcPath.split(",")[1]);
-		
-		String filePath = path.getAbsolutePath() + "static/images/dashboards/";
-		String fileName = id + ".png";
-		return uploadFile(decoderBytes,filePath, fileName);
-	}*/
 
 	public void updateDashboardById(String id, String db) throws Exception{
 		JSONObject jso = JSONObject.fromObject(db);
@@ -194,22 +160,8 @@ public class DashboardServiceImpl implements DashboardService {
 	}
 
 	@Override
-	public Object uploadImage(String id, MultipartFile file) throws IllegalStateException, IOException {
-		String hash = null;
-		if(id.isEmpty()) {
-			hash = "anony";
-		}else {
-			hash = id;
-		}
-		
-		String fileName = file.getOriginalFilename();
-		String suffixName = fileName.substring(fileName.lastIndexOf("."));
-		String hashName = Utils.hash(fileName)+suffixName;
-		
-		if(suffixName.equalsIgnoreCase(".jpg") || suffixName.equalsIgnoreCase(".jpeg") || suffixName.equalsIgnoreCase(".png")) {
-			file.transferTo(new File(Utils.getRootPath() + Utils.getImagesPath() + "/" + id + "/img" + hashName));
-		}
-		return Utils.getImagesPath()+ "/" + id + "/img" + hashName;
+	public Object uploadImage(String id, MultipartFile files) throws IllegalStateException, IOException {
+		return Utils.uploadImage(id, files);
 	}
 
 }

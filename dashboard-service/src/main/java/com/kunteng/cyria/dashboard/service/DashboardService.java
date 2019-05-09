@@ -18,5 +18,5 @@ public interface DashboardService {
 	void publishDashboardById(String id, String option);
 	Published getPublishedById(String id);
 	void updateDashboardById(String id, String db) throws IOException, Exception;
-	Object uploadImage(String id, MultipartFile file) throws IllegalStateException, IOException;
+	Object uploadImage(String id, MultipartFile files) throws IllegalStateException, IOException;
 }
