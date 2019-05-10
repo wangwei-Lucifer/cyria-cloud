@@ -13,6 +13,7 @@ import com.kunteng.cyria.dashboard.domain.Published;
 import com.kunteng.cyria.dashboard.domain.Template;
 import com.kunteng.cyria.dashboard.domain.Translation;
 import com.kunteng.cyria.dashboard.service.TemplateService;
+import com.kunteng.cyria.dashboard.utils.CommonResult;
 
 @RestController
 public class TemplateController {
@@ -21,27 +22,27 @@ public class TemplateController {
 	private TemplateService templateService;
 	
 	@RequestMapping(path = "/templates", method = RequestMethod.GET)
-	public Page<Template> getAllTemplates(int page, int size){
+	public CommonResult getAllTemplates(int page, int size){
 		return templateService.getAllTemplates(page,size);
 	}
 	
 	@RequestMapping(path = "/templates/{id}", method = RequestMethod.GET)
-	public Template getTemplateById(@PathVariable String id) {
+	public CommonResult getTemplateById(@PathVariable String id) {
 		return templateService.getTemplateById(id);
 	}
 	
 	@RequestMapping(path = "/templates", method = RequestMethod.POST)
-	public Template  createNewTemplate(@RequestBody Translation translation) {
+	public CommonResult  createNewTemplate(@RequestBody Translation translation) {
 		return templateService.createNewTemplate(translation);
 	}
 	
 	@RequestMapping(path ="/templates/{id}", method = RequestMethod.PUT)
-	public Template updateTemplateById(@PathVariable String id, @RequestBody String template) {
+	public CommonResult updateTemplateById(@PathVariable String id, @RequestBody String template) {
 		return templateService.updateTemplateById(id, template);
 	}
 	
 	@RequestMapping(path = "/templates/{id}", method = RequestMethod.DELETE)
-	public void deleteTemplateById(@PathVariable String id) {
-		templateService.deleteTemplateById(id);
+	public CommonResult deleteTemplateById(@PathVariable String id) {
+		return templateService.deleteTemplateById(id);
 	}
 }

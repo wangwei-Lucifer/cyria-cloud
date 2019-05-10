@@ -1,17 +1,7 @@
 package com.kunteng.cyria.dashboard.service;
 
-import java.awt.image.RenderedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Base64;
-import java.util.Base64.Decoder;
-
-import javax.imageio.ImageIO;
-
-import org.bson.BasicBSONDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kunteng.cyria.dashboard.domain.Config;
@@ -31,11 +19,11 @@ import com.kunteng.cyria.dashboard.domain.Translation;
 import com.kunteng.cyria.dashboard.repository.DashboardRepository;
 import com.kunteng.cyria.dashboard.repository.PublishedRepository;
 import com.kunteng.cyria.dashboard.repository.TemplateRepository;
+import com.kunteng.cyria.dashboard.utils.CommonResult;
 import com.kunteng.cyria.dashboard.utils.Utils;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONArray;
-import sun.misc.BASE64Decoder;
 
 @Service
 public class DashboardServiceImpl implements DashboardService {
@@ -51,21 +39,20 @@ public class DashboardServiceImpl implements DashboardService {
 	@Autowired
 	private PublishedRepository publishedRepository;
 
-	public Page<Dashboard> getAllDashboard(String user, Integer page, Integer size) {
+	public CommonResult getAllDashboard(String user, Integer page, Integer size) {
 		Sort sort = new Sort(Sort.Direction.ASC,"timestamp");
 		PageRequest pageRequest = new PageRequest(page-1, size, sort);
 		Page<Dashboard> dashboard = dashboardRepository.findByUser(user, pageRequest);
-		return dashboard;
+		
+		return new CommonResult().success(dashboard);
 	}
 
-	public Dashboard getDashboardById(String id) {
+	public CommonResult getDashboardById(String id) {
 		Dashboard dashboard =  dashboardRepository.findByHash(id);
-		return dashboard;
+		return new CommonResult().success(dashboard);
 	}
 	
-	public static Dashboard NULLDashboard=new Dashboard();
-	
-	public Dashboard createNewDashboard(String id, Translation translation){
+	public CommonResult createNewDashboard(String id, Translation translation){
 		log.debug("translation=" + translation);
 
 		if(!translation.getIsTemplate()) {
@@ -90,18 +77,20 @@ public class DashboardServiceImpl implements DashboardService {
 			dashboard.setUser(translation.getUser());
 
 			dashboardRepository.save(dashboard);
-			return dashboard;
+			return new CommonResult().success(dashboard);
 		}
-		return NULLDashboard;
+		return new CommonResult().failed();
 	}
 	
-	public String deleteDashboardByHash(String id) {
-		return dashboardRepository.deleteByHash(id);
+	public CommonResult deleteDashboardByHash(String id) {
+		String result =  dashboardRepository.deleteByHash(id);
+		return new CommonResult().success(result);
 	}
 
-	public void publishDashboardById(String id, String option){
+	public CommonResult publishDashboardById(String id, String option){
 		System.out.println("option="+option);
 		System.out.println("id="+id);
+		CommonResult result = new CommonResult();
 		option=option.trim();
 		Dashboard dashboard = dashboardRepository.findByHash(id);
 
@@ -112,6 +101,9 @@ public class DashboardServiceImpl implements DashboardService {
 			publishedRepository.deleteByHash(dashboard.getPublish().getHash());
 			System.out.println("hash2="+ dashboard.getPublish().getHash());
 			dashboard.getPublish().setHash("");
+			result.setCode(0);
+			result.setMessage("停止发布成功");
+			result.setData(null);
 		}
 		
 		if(option.equals("published=")){
@@ -120,7 +112,10 @@ public class DashboardServiceImpl implements DashboardService {
 			dashboard.getPublish().setHash(published.getHash());
 			published.setConfig(dashboard.getConfig());
 			published.setWidget(dashboard.getWidget());
-			publishedRepository.save(published);
+			Published publish =publishedRepository.save(published);
+			result.setCode(0);
+			result.setData(publish);
+			result.setMessage("发布成功");
 		}
 		
 		if(option.equals("republished=")){
@@ -128,12 +123,16 @@ public class DashboardServiceImpl implements DashboardService {
 			Published published = publishedRepository.findByHash(dashboard.getPublish().getHash());
 			published.setConfig(dashboard.getConfig());
 			published.setWidget(dashboard.getWidget());
-			publishedRepository.save(published);
+			Published publish = publishedRepository.save(published);
+			result.setCode(0);
+			result.setData(publish);
+			result.setMessage("重新发布成功");
 		}
 		dashboardRepository.save(dashboard);
+		return result;
 	}
 
-	public void updateDashboardById(String id, String db) throws Exception{
+	public CommonResult updateDashboardById(String id, String db) throws Exception{
 		JSONObject jso = JSONObject.fromObject(db);
 		Dashboard dashboard = dashboardRepository.findByHash(id);
 		if(jso.has("config")) {
@@ -146,22 +145,23 @@ public class DashboardServiceImpl implements DashboardService {
 			dashboard.setWidget(widget);
 		}
 		if(jso.has("imgData")) {
-			//String path = ResourceUtils.getURL("classpath:").getPath();
+			//String path = ResourceUtils.getURL("classpath:").getPath()
 			String imgUrl = Utils.createImage(jso.getString("imgData"),id);
 	//		dashboard.setImgData(jso.getString("imgData"));
 			dashboard.setImgUrl(imgUrl);
 		}
-		dashboardRepository.save(dashboard);
+		Dashboard result = dashboardRepository.save(dashboard);
+		return new CommonResult().success(result);
 	}
 	
-	public Published getPublishedById(String id) {
+	public CommonResult getPublishedById(String id) {
 		Published published = publishedRepository.findByHash(id);
-		return published;
+		return new CommonResult().success(published);
 	}
 
 	@Override
-	public Object uploadImage(String id, MultipartFile files) throws IllegalStateException, IOException {
-		return Utils.uploadImage(id, files);
+	public CommonResult uploadImage(String id, MultipartFile files) throws IllegalStateException, IOException {
+		return new CommonResult().success(Utils.uploadImage(id, files));
 	}
 
 }

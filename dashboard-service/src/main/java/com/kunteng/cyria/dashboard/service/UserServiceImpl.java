@@ -2,6 +2,8 @@ package com.kunteng.cyria.dashboard.service;
 
 import com.kunteng.cyria.dashboard.domain.User;
 import com.kunteng.cyria.dashboard.repository.UserRepository;
+import com.kunteng.cyria.dashboard.utils.CommonResult;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,24 +24,27 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRepository userRepository;
 
-	public User getUserByUsername(String username){
-		return userRepository.findUserByUsername(username);
+	public CommonResult getUserByUsername(String username){
+		User user = userRepository.findUserByUsername(username);
+		return new CommonResult().success(user);
 	}
 
-	public User createNewUser(User user) {
-		return userRepository.save(user);
+	public CommonResult createNewUser(User user) {
+		User result = userRepository.save(user);
+		return new CommonResult().success(result);
 	}
 
-	public String userLogin(User user) {
+	public CommonResult userLogin(User user) {
 		User usr = userRepository.findUserByUsername(user.getUsername());
 		if(usr.getPassword().equals(user.getPassword())){
-			return usr.getUsername();
+			return new CommonResult().success(usr.getUsername());
 		}else{
-			return "failed";
+			return new CommonResult().failed();
 		}
 	}
 
-	public void userLogout(String username){
+	public CommonResult userLogout(String username){
 		User user = userRepository.findUserByUsername(username);
+		return new CommonResult().success(user);
 	}
 }

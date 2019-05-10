@@ -5,15 +5,16 @@ import org.springframework.data.domain.Page;
 import com.kunteng.cyria.dashboard.domain.Published;
 import com.kunteng.cyria.dashboard.domain.Template;
 import com.kunteng.cyria.dashboard.domain.Translation;
+import com.kunteng.cyria.dashboard.utils.CommonResult;
 
 public interface TemplateService {
-	Template createNewTemplate(Translation translation);
+	CommonResult createNewTemplate(Translation translation);
 
-	Page<Template> getAllTemplates(Integer page, Integer size);
+	CommonResult getAllTemplates(Integer page, Integer size);
 
-	Template getTemplateById(String id);
+	CommonResult getTemplateById(String id);
 
-	void deleteTemplateById(String id);
+	CommonResult deleteTemplateById(String id);
 
-	Template updateTemplateById(String id, String tp);
+	CommonResult updateTemplateById(String id, String tp);
 }

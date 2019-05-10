@@ -10,9 +10,9 @@ import com.kunteng.cyria.dashboard.utils.JsonUtil;
 
 public class CommonResult {
     //操作成功
-    public static final int SUCCESS = 200;
+    public static final int SUCCESS = 0;
     //操作失败
-    public static final int FAILED = 500;
+    public static final int FAILED = 1;
     //参数校验失败
     public static final int VALIDATE_FAILED = 404;
     //未认证
