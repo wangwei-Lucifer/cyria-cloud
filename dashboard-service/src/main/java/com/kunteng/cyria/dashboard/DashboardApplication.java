@@ -64,7 +64,7 @@ public class DashboardApplication extends ResourceServerConfigurerAdapter {
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-				.antMatchers("/" , "/publish/*", "/dashboards/*","/dashboard/*", "/templates", "/templates/*", "/user/*","/user/**","/user/*/*","/upload/image/*","/picUpload").permitAll()
+				.antMatchers("/" , "/**","/publish/*", "/dashboards/*","/dashboard/*", "/templates", "/templates/*", "/user/*","/user/**","/user/*/*","/upload/image/*","/static/upload/dashboards/*").permitAll()
 				.anyRequest().authenticated();
 	}
 }

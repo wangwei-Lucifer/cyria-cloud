@@ -7,23 +7,26 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import sun.misc.BASE64Decoder;
 
 public class Utils {
+	private static final String rootPath ="/app/static";
 
-	private static final String dashboardPath = "/static/upload/dashboards";
+	private static final String dashboardPath = "/upload/dashboards/";
 	
-	private static final String imagesPath = "/static/upload/images";
+	private static final String imagesPath = "/upload/images/";
 	
-	public static String getRootPath() throws FileNotFoundException {
-		File rootPath = new File(ResourceUtils.getURL("classpath:").getPath());
-		//File rootPath = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX);
-		return rootPath.getAbsolutePath();
+	public static String getRootPath(){
+	/*	File rootPath = new File(ResourceUtils.getURL("classpath:").getPath());
+		return rootPath.getAbsolutePath();*/
+		return rootPath;
 	}
 	
+
 	public static String getDashboardPath() {
 		return dashboardPath;
 	}
@@ -55,12 +58,12 @@ public class Utils {
 	}
 	
 	public static String uploadFile(byte[] file, String filePath, String fileName) throws Exception {
-		File targetFile = new File(filePath);
+		File targetFile = new File(getRootPath() + filePath);
 		if(!targetFile.exists()) {
 			targetFile.mkdirs();
 		}
 		
-		FileOutputStream out = new FileOutputStream(filePath + fileName);
+		FileOutputStream out = new FileOutputStream(getRootPath()  +filePath + fileName);
 		out.write(file);
 		out.flush();
 		out.close();
@@ -76,7 +79,7 @@ public class Utils {
 		BASE64Decoder decoder = new BASE64Decoder();
 		byte[] decoderBytes = decoder.decodeBuffer(srcPath.split(",")[1]);
 		
-		String filePath = getRootPath() + dashboardPath;
+		String filePath = getDashboardPath();
 		String fileName = id + ".png";
 		return uploadFile(decoderBytes,filePath, fileName);
 	}
@@ -104,7 +107,7 @@ public class Utils {
 			}
 			
 			files.transferTo(uploadFile);
-			return getImagesPath()+ "/" + id + "/img/" + hashName;
+			return getImagesPath() + id + "/img/" + hashName;
 		}else {
 			return null;
 		}
