@@ -10,9 +10,9 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.time.LocalDate;
 
-@Document(collection = "users")
+@Document(collection = "accounts")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class User {
+public class Account {
 
 	@Id
 	private String id;
@@ -39,11 +39,11 @@ public class User {
 
 	private String city;
 
-	public User(){
+	public Account(){
 	
 	}
 
-	public User(String username, String password, List<String> roles){
+	public Account(String username, String password, List<String> roles){
 		this.username = username;
 		this.password = password;
 		this.roles = roles;
