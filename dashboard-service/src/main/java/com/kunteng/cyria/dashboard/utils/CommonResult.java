@@ -20,8 +20,9 @@ public class CommonResult {
     //未授权
     public static final int  FORBIDDEN = 403;
     private int code;
-    private String message;
+    private String msg;
     private Object data;
+    private String id;
 
     /**
      * 普通成功返回
@@ -30,7 +31,7 @@ public class CommonResult {
      */
     public CommonResult success(Object data) {
         this.code = SUCCESS;
-        this.message = "操作成功";
+        this.msg = "操作成功";
         this.data = data;
         return this;
     }
@@ -40,8 +41,14 @@ public class CommonResult {
      */
     public CommonResult failed() {
         this.code = FAILED;
-        this.message = "操作失败";
+        this.msg = "操作失败";
         return this;
+    }
+    
+    public CommonResult customFailed(String msg) {
+    	this.code = 1;
+    	this.msg = msg;
+    	return this;
     }
 
     /**
@@ -49,9 +56,9 @@ public class CommonResult {
      *
      * @param message 错误信息
      */
-    public CommonResult validateFailed(String message) {
+    public CommonResult validateFailed(String msg) {
         this.code = VALIDATE_FAILED;
-        this.message = message;
+        this.msg = msg;
         return this;
     }
 
@@ -62,7 +69,7 @@ public class CommonResult {
      */
     public CommonResult unauthorized(String message) {
         this.code = UNAUTHORIZED;
-        this.message = "暂未登录或token已经过期";
+        this.msg = "暂未登录或token已经过期";
         this.data = message;
         return this;
     }
@@ -74,7 +81,7 @@ public class CommonResult {
      */
     public CommonResult forbidden(String message) {
         this.code = FORBIDDEN;
-        this.message = "没有相关权限";
+        this.msg = "没有相关权限";
         this.data = message;
         return this;
     }
@@ -101,12 +108,12 @@ public class CommonResult {
         this.code = code;
     }
 
-    public String getMessage() {
-        return message;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMsg(String message) {
+        this.msg = message;
     }
 
     public Object getData() {
@@ -116,4 +123,12 @@ public class CommonResult {
     public void setData(Object data) {
         this.data = data;
     }
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 }

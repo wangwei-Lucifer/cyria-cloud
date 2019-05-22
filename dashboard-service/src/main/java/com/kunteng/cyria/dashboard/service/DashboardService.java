@@ -12,7 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface DashboardService {
 
-	CommonResult getAllDashboard(String id, Integer page, Integer size);
+	//CommonResult getAllDashboard(String id, Integer page, Integer size);
+	CommonResult getAllDashboard(String id);
 	CommonResult getDashboardById(String id);
 	CommonResult createNewDashboard(String id, Translation ts);
 	CommonResult deleteDashboardByHash(String id);

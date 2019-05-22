@@ -5,18 +5,22 @@ import org.hibernate.validator.constraints.Length;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.validation.constraints.NotNull;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.time.LocalDate;
 
 @Document(collection = "accounts")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Account {
-
+	
 	@Id
 	private String id;
-
+	
 	@NotNull
 	@Length(min = 3, max = 20)
 	private String username;
@@ -31,7 +35,9 @@ public class Account {
 
 	private LocalDate createTime;
 
-	private List<String> roles;
+	private List<Role> authorities;
+	
+	private ArrayList<String> roles;
 
 	private String group;
 
@@ -43,10 +49,11 @@ public class Account {
 	
 	}
 
-	public Account(String username, String password, List<String> roles){
+	public Account(String username, String password, List<Role> authorities){
 		this.username = username;
 		this.password = password;
-		this.roles = roles;
+		this.authorities = authorities;
+		this.roles  = new ArrayList<String>() {{add("user");}}; 
 	}
 
 	public String getId() {
@@ -93,11 +100,19 @@ public class Account {
 		this.createTime = createTime;
 	}
 
-	public List<String> getRoles(){
-		return this.roles;
+	public Collection<? extends GrantedAuthority> getAuthorities(){
+		return this.authorities;
 	}
 
-	public void setRoles(List<String> roles){
+	public void setAuthorities(List<Role> authorities){
+		this.authorities = authorities;
+	}
+	
+	public ArrayList<String> getRoles(){
+		return this.roles;
+	}
+	
+	public void setRoles(ArrayList<String> roles) {
 		this.roles = roles;
 	}
 

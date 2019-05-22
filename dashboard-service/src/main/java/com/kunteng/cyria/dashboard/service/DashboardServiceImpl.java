@@ -2,6 +2,8 @@ package com.kunteng.cyria.dashboard.service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +41,12 @@ public class DashboardServiceImpl implements DashboardService {
 	@Autowired
 	private PublishedRepository publishedRepository;
 
-	public CommonResult getAllDashboard(String user, Integer page, Integer size) {
-		Sort sort = new Sort(Sort.Direction.ASC,"timestamp");
+//	public CommonResult getAllDashboard(String user, Integer page, Integer size) {
+	public CommonResult getAllDashboard(String user) {
+	/*	Sort sort = new Sort(Sort.Direction.ASC,"timestamp");
 		PageRequest pageRequest = new PageRequest(page-1, size, sort);
-		Page<Dashboard> dashboard = dashboardRepository.findByUser(user, pageRequest);
-		
+		Page<Dashboard> dashboard = dashboardRepository.findByUser(user, pageRequest);*/
+		List<Dashboard> dashboard = dashboardRepository.findByUser(user);
 		return new CommonResult().success(dashboard);
 	}
 
@@ -102,7 +105,7 @@ public class DashboardServiceImpl implements DashboardService {
 			System.out.println("hash2="+ dashboard.getPublish().getHash());
 			dashboard.getPublish().setHash("");
 			result.setCode(0);
-			result.setMessage("停止发布成功");
+			result.setMsg("停止发布成功");
 			result.setData(null);
 		}
 		
@@ -115,7 +118,7 @@ public class DashboardServiceImpl implements DashboardService {
 			Published publish =publishedRepository.save(published);
 			result.setCode(0);
 			result.setData(publish);
-			result.setMessage("发布成功");
+			result.setMsg("发布成功");
 		}
 		
 		if(option.equals("republished=")){
@@ -126,7 +129,7 @@ public class DashboardServiceImpl implements DashboardService {
 			Published publish = publishedRepository.save(published);
 			result.setCode(0);
 			result.setData(publish);
-			result.setMessage("重新发布成功");
+			result.setMsg("重新发布成功");
 		}
 		dashboardRepository.save(dashboard);
 		return result;

@@ -3,9 +3,6 @@ services:
   auth-service:
     environment:
       CONFIG_SERVICE_PASSWORD: admin
-      NOTIFICATION_SERVICE_PASSWORD: admin
-      STATISTICS_SERVICE_PASSWORD: admin
-      ACCOUNT_SERVICE_PASSWORD: admin
       DASHBOARD_SERVICE_PASSWORD: admin
       MONGODB_PASSWORD: admin
     build: auth-service

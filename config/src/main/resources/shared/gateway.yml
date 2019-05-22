@@ -11,6 +11,8 @@ ribbon:
   ConnectTimeout: 20000
 
 zuul:
+  sensitive-headers: Access-Control-Allow-Origin
+  ignored-headers: Access-Control-Allow-Origin,H-APP-Id,Token,APPToken
   ignoredServices: '*'
   host:
     connect-timeout-millis: 20000
@@ -30,3 +32,4 @@ zuul:
         sensitiveHeaders:
 server:
   port: 4000
+

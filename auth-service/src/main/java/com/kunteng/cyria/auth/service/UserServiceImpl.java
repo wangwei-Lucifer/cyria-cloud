@@ -2,6 +2,9 @@ package com.kunteng.cyria.auth.service;
 
 import com.kunteng.cyria.auth.domain.User;
 import com.kunteng.cyria.auth.repository.UserRepository;
+
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +34,33 @@ public class UserServiceImpl implements UserService {
 		repository.save(user);
 
 		log.info("new user has been created: {}", user.getUsername());
+	}
+	
+	public boolean hasUser(String name) {
+		User dbuser = repository.findByUsername(name);
+		if(dbuser == null) {
+			return false;
+		}else {
+			log.info("this user in db: "+ dbuser.toString());
+			return true;
+		}
+	}
+	
+	public void saveUser(User u) {
+		repository.save(u);
+	}
+	
+	public User find(String id) {
+		Optional<User> opt = repository.findById(id);
+		return opt.orElse(null);
+	}
+	
+	public User findByUsername(String username) {
+		User dbuser = repository.findByUsername(username);
+		return dbuser;
+	}
+	
+	public void updateUser(User u) {
+		repository.save(u);
 	}
 }

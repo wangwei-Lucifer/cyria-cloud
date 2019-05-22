@@ -20,10 +20,11 @@ public class AccountController {
 
 	@RequestMapping(path = "/user/{id}/info", method = RequestMethod.GET)
 	public CommonResult getUserByUsername(@PathVariable String id ){
+		System.out.println("getUserByUsername");
 		return accountService.getAccountByUsername(id);
 	}
 
-	@RequestMapping(path = "/user", method = RequestMethod.POST)
+	@RequestMapping(path = "/user/register", method = RequestMethod.POST)
 	public CommonResult createNewUser(@Valid @RequestBody Account account) {
 		return accountService.createNewAccount(account);
 	}
