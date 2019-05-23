@@ -29,7 +29,7 @@ public interface AuthServiceClient {
 	String register(@RequestBody User user);
 	
 	@RequestMapping(value = "/uaa/users/getJWTState", method = RequestMethod.GET)
-	String getJWTState(String jwtToken);
+	String getJWTState(@RequestParam("jwtToken") String jwtToken);
 	
 	@RequestMapping(value = "/uaa/users/refreshToken", method = RequestMethod.POST)
 	String refreshToken(@RequestBody String token);

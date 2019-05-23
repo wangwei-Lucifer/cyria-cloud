@@ -94,7 +94,7 @@ public class UserController {
 	}
 	
 	@PreAuthorize("#oauth2.hasScope('server')")
-	@RequestMapping(value = "/refreshToken", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/refreshToken", method = RequestMethod.POST)
 	public String refreshToken(@RequestBody String token) {
 		Claims claims = null;
 		String name = this.getIdByJWT(token);
@@ -193,9 +193,10 @@ public class UserController {
 		return JWT;
 	}
 	
-	@PreAuthorize("#oauth2.hasScope('server')")
+	//@PreAuthorize("#oauth2.hasScope('server')")
 	@RequestMapping(value = "/getJWTState", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public String getJWTState(String jwtToken) {
+		log.info("jwtToken:"+jwtToken);
 		Claims claims = null;
 		try {
 			claims = Jwts.parser()

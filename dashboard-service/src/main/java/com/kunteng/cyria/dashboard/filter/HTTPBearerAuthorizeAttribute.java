@@ -8,19 +8,20 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import com.esotericsoftware.minlog.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kunteng.cyria.dashboard.client.AuthServiceClient;
 import com.kunteng.cyria.dashboard.utils.CommonResult;
+import com.kunteng.cyria.dashboard.utils.RequestWrapper;
 
-@Component
+//@Component
+@WebFilter(urlPatterns= {"/bashboards/*","/templates/*","/publish/*","/user/*"}, filterName="HTTPBearerAuthorizeAttribute")
 public class HTTPBearerAuthorizeAttribute implements  Filter {
 	@Autowired
 	private AuthServiceClient client;
@@ -35,9 +36,10 @@ public class HTTPBearerAuthorizeAttribute implements  Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		System.out.println("doFilter!");
 		// TODO Auto-generated method stub
 		CommonResult resultMsg;
-		
+		System.out.println("11");
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		httpResponse.setCharacterEncoding("UTF-8");
 		httpResponse.setContentType("application/json;charset=utf-8");
@@ -46,18 +48,29 @@ public class HTTPBearerAuthorizeAttribute implements  Filter {
 		httpResponse.setHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE,PATCH,PUT");
 		httpResponse.setHeader("Access-Control-Max-Age", "3600");
 		httpResponse.setHeader("Access-Control-Allow-Headers", "Origin,X-Requested-With,x-requested-with,X-Custom-Header,Content-Type,Accept,Authorization");
-		
+		System.out.println("22");
 		HttpServletRequest httpRequest = (HttpServletRequest)request;
+
+		String path = httpRequest.getServletPath();
+		
+		RequestWrapper wrapper = new RequestWrapper(httpRequest);
+		
+		System.out.printf("path: %s, body: %s\n", path, wrapper.getBody());
+		if(path.equalsIgnoreCase("/user/login")) {
+			chain.doFilter(wrapper, response);
+			return;
+		}
 		String method = httpRequest.getMethod();
 		if("OPTIONS".equalsIgnoreCase(method)) {
 			httpResponse.setStatus(HttpServletResponse.SC_ACCEPTED);
 		}
 		String auth = httpRequest.getHeader("Authorization");
 		System.out.println("auth===="+auth);
-		if(auth != null && auth.length() > 7) {
-			String HeadStr = auth.substring(0,6).toLowerCase();
-			if(HeadStr.compareTo("bbbbbb") == 0) {
-				auth = auth.substring(7,auth.length());
+		System.out.println("auth.length="+auth.length());
+		if(auth != null && auth.length() > 6) {
+			String HeadStr = auth.substring(0,5).toLowerCase();
+			if(HeadStr.compareTo("cyria") == 0) {
+				auth = auth.substring(6,auth.length());
 				System.out.println("token===="+ auth);
 				String tokenState = client.getJWTState(auth);
 				System.out.println("tokenState===="+ tokenState);
@@ -73,7 +86,7 @@ public class HTTPBearerAuthorizeAttribute implements  Filter {
 				}
 			}
 		}
-		
+		System.out.println("auth end here!");
 		httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		
 		ObjectMapper mapper = new ObjectMapper();

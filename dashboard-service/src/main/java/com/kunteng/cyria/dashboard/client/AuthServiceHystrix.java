@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kunteng.cyria.dashboard.domain.JWT;
 import com.kunteng.cyria.dashboard.domain.User;
@@ -29,16 +30,18 @@ public class AuthServiceHystrix implements AuthServiceClient {
 		
 	}
 	
+	@Override
 	public String register(@RequestBody User user) {
 		return null;
 		
 	}
 	
-	public String getJWTState(String jwtToken) {
+	@Override
+	public String getJWTState(@RequestParam String jwtToken) {
 		return null;
 	}
 	
-
+	@Override
 	public String refreshToken(@RequestBody String token) {
 		return null;
 	}
