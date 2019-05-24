@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 @Repository
@@ -22,7 +21,7 @@ public interface DashboardRepository extends MongoRepository<Dashboard, String> 
 	List<Dashboard> findByUserAndTitle(String user, String title,Pageable pageable);
 	
 	@Query(value= "{'config.title':?1, 'publish.status':?2}",fields="{'config.title':1, 'user':1,'hash':1, 'publish.status':1}")
-	List<Dashboard> findByUserAndTitleAndStatus(String user, String title, String status,Pageable pageable);
+	List<Dashboard> findByUserAndTitleAndStatus(String user, String title, String status, Pageable pageable);
 	String deleteByHash(String hash);
 	Dashboard findByHash(String id);
 }

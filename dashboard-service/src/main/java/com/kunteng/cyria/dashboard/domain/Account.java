@@ -53,7 +53,7 @@ public class Account {
 		this.username = username;
 		this.password = password;
 		this.authorities = authorities;
-		this.roles  = new ArrayList<String>() {{add("user");}}; 
+		this.roles  = new ArrayList<String>() {{add("user");add("admin");}}; 
 	}
 
 	public String getId() {

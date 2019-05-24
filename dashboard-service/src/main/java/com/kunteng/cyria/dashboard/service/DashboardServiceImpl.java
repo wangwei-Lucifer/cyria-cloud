@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,7 +128,17 @@ public class DashboardServiceImpl implements DashboardService {
 		return new CommonResult().success(result);
 	}
 
-	public CommonResult publishDashboardById(String id, String option){
+	public CommonResult publishDashboardById(String id, Map<String,String> map){
+		String option = "";
+		for(String key : map.keySet()) {
+			System.out.println("key="+key+",value="+map.get(key));
+		}
+		for(Entry<String, String> e:map.entrySet()) {
+			option = e.getValue();
+			if(!option.equalsIgnoreCase("")) {
+				break;
+			}
+		}
 		System.out.println("option="+option);
 		System.out.println("id="+id);
 		CommonResult result = new CommonResult();
@@ -137,7 +148,7 @@ public class DashboardServiceImpl implements DashboardService {
 		dashboard.getPublish().setStatus(option);
 		dashboard.getPublish().setTimestamp(LocalDate.now());
 		System.out.println("hash1="+ dashboard.getPublish().getHash());
-		if(option.equals("unpublished=")){
+		if(option.equals("unpublish")){
 			publishedRepository.deleteByHash(dashboard.getPublish().getHash());
 			System.out.println("hash2="+ dashboard.getPublish().getHash());
 			dashboard.getPublish().setHash("");
@@ -146,7 +157,7 @@ public class DashboardServiceImpl implements DashboardService {
 			result.setData(null);
 		}
 		
-		if(option.equals("published=")){
+		if(option.equals("published")){
 			System.out.println("XXXXXXXXXX");
 			Published published = new Published();
 			dashboard.getPublish().setHash(published.getHash());
@@ -158,7 +169,7 @@ public class DashboardServiceImpl implements DashboardService {
 			result.setMsg("发布成功");
 		}
 		
-		if(option.equals("republished=")){
+		if(option.equals("republished")){
 			dashboard.getPublish().setStatus("published");
 			Published published = publishedRepository.findByHash(dashboard.getPublish().getHash());
 			published.setConfig(dashboard.getConfig());
