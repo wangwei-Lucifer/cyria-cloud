@@ -35,10 +35,10 @@ import java.text.SimpleDateFormat;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-	private static final long EXPIRATIONTIME = 3600000l;
-	private static final long OUTEXPIRATIONTIME = 7200000l;
-	//private static final long EXPIRATIONTIME = 240000l;
-	//private static final long OUTEXPIRATIONTIME = 480000l;
+	//private static final long EXPIRATIONTIME = 3600000l;
+	//private static final long OUTEXPIRATIONTIME = 7200000l;
+	private static final long EXPIRATIONTIME = 240000l;
+	private static final long OUTEXPIRATIONTIME = 480000l;
 	private static final String SECRET = "P@ssw02d";
 	private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 

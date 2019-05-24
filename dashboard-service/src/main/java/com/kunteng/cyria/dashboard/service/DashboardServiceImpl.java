@@ -44,22 +44,47 @@ public class DashboardServiceImpl implements DashboardService {
 	private PublishedRepository publishedRepository;
 
 	public CommonResult getAllDashboard(String user,  Map<String,Object> map) {
-		System.out.println("map.size= "+ map.size());
-		if(map.size() != 0) {
-			for(String m : map.keySet()) {
-				System.out.print("key:"+ m);
-				System.out.println("value:"+ map.get(m));
+		int size = map.size();
+		int page = 1;
+		int limit = 20;
+		String title = "";
+		String status = "";
+		if(size != 0) {
+			for(String key: map.keySet()) {
+				if (key.equalsIgnoreCase("page")) {
+					page = Integer.decode(map.get(key).toString());
+				}
+				
+				if(key.equalsIgnoreCase("limit")) {
+					limit = Integer.decode(map.get(key).toString());
+				}
+				
+				if(key.equalsIgnoreCase("title")) {
+					title = (String) map.get(key);
+				}
+				if(key.equalsIgnoreCase("status")) {
+					status = (String) map.get(key);
+				}
 			}
 		}
-		return null;
-	/*	System.out.printf("user=%s, page =%d, limit =%d, title= %s, status = %s\n",user, page,limit,title, status);
+
+		System.out.printf("user=%s, page =%d, limit =%d, title= %s, status = %s\n",user, page,limit,title, status);
 		Sort sort = new Sort(Sort.Direction.ASC,"timestamp");
 		PageRequest pageRequest = new PageRequest(page-1, limit, sort);
-		Page<Dashboard> dashboard = dashboardRepository.findByUser(user, pageRequest);
-		Map<String,Object> map = new HashMap<>();
-		map.put("items", dashboard);
-		map.put("total", 2);
-		return new CommonResult().success(map);*/
+		List<Dashboard> dashboard = null;
+		if(("".equals(title)) && ("".equals(status))) {
+			dashboard = dashboardRepository.findByUser(user, pageRequest);
+		}else if("".equals(title)) {
+			dashboard = dashboardRepository.findByUserAndStatus(user, status, pageRequest);
+		}else if("".equals(status)) {
+			dashboard = dashboardRepository.findByUserAndTitle(user, title, pageRequest);
+		}else {
+			dashboard = dashboardRepository.findByUserAndTitleAndStatus(user, title, status, pageRequest);
+		}
+		Map<String,Object> result = new HashMap<>();
+		result.put("items", dashboard);
+		result.put("total", 2);
+		return new CommonResult().success(result);
 	}
 
 	public CommonResult getDashboardById(String id) {

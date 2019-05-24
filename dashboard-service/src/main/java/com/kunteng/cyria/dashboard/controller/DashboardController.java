@@ -27,7 +27,7 @@ public class DashboardController {
 
 //	@PreAuthorize("#oauth2.hasScope('server') or #name.equals('dashboard')")
 	@RequestMapping(path = "/user/{id}/dashboards", method = RequestMethod.GET)
-	public CommonResult getAllDashboard(@PathVariable String id, @RequestBody Map<String,Object> map){
+	public CommonResult getAllDashboard(@PathVariable String id, @RequestParam Map<String,Object> map){
 		return dashboardService.getAllDashboard(id,map);
 	}
 	@RequestMapping(path = "/user/{id}/dashboards", method = RequestMethod.POST)
