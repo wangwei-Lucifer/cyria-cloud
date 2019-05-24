@@ -1,6 +1,8 @@
 FROM mongo:3
 MAINTAINER Kunteng cyria <cyria@kunteng.com>
 
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
 ADD init.sh /init.sh
 
 RUN \

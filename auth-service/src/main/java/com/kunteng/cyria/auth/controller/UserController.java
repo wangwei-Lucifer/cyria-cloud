@@ -7,7 +7,8 @@ import com.kunteng.cyria.auth.tools.BPwdEncoderUtil;
 
 import org.apache.commons.lang.StringUtils;
 //import org.json.JSONObject;
-import net.sf.json.JSONObject;
+//import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,9 +36,9 @@ import java.text.SimpleDateFormat;
 @RequestMapping("/users")
 public class UserController {
 	private static final long EXPIRATIONTIME = 3600000l;
-	private static final long OUTEXPIRATIONTIME = 7200000;
-	//private static final long EXPIRATIONTIME = 120000l;
-	//private static final long OUTEXPIRATIONTIME = 240000l;
+	private static final long OUTEXPIRATIONTIME = 7200000l;
+	//private static final long EXPIRATIONTIME = 240000l;
+	//private static final long OUTEXPIRATIONTIME = 480000l;
 	private static final String SECRET = "P@ssw02d";
 	private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -96,9 +97,13 @@ public class UserController {
 	@PreAuthorize("#oauth2.hasScope('server')")
 	@RequestMapping(value = "/refreshToken", method = RequestMethod.POST)
 	public String refreshToken(@RequestBody String token) {
+		log.info("refreshToken");
 		Claims claims = null;
-		String name = this.getIdByJWT(token);
-		User usr = userService.findByUsername(name);
+		String id = this.getIdByJWT(token);
+		if(id == null) {
+			return null;
+		}
+		User usr = userService.find(id);
 		if(usr == null) {
 			return null;
 		}
@@ -118,7 +123,7 @@ public class UserController {
 			log.info("getROLE=" + claims.get("authorities"));
 			log.info("getID="+ claims.getSubject());
 			User us = userService.find(claims.getSubject());
-			if(us.getId().equals(claims.getSubject())) {
+			if(usr.getId().equals(claims.getSubject())) {
 				log.info("id claims equals");
 				log.info("getUserName = "+ us.getUsername());
 				try {
@@ -161,15 +166,19 @@ public class UserController {
 	}
 	
 	private String getIdByJWT(String jwt) {
+		log.info("getIdByJWT");
+		log.info("jwt:::"+jwt);
 		if(!StringUtils.isBlank(jwt)) {
 			if(jwt.split("\\.").length == 3) {
 				log.info("jwt:"+jwt);
 				String[] split = jwt.split("\\.");
 				String content = split[1];
 				String s = Base64Codec.BASE64URL.decodeToString(content);
-				JSONObject jsonObject = JSONObject.fromObject(s);
-				User user = (User)JSONObject.toBean(jsonObject, User.class);
-				return user.getUsername();
+				log.info("s="+s);
+				JSONObject jsonObject = JSONObject.parseObject(s);
+				String id =jsonObject.getString("sub");
+				log.info("id="+id);
+				return id;
 			}
 		}
 		return null;

@@ -2,7 +2,9 @@ package com.kunteng.cyria.dashboard.service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,13 +43,23 @@ public class DashboardServiceImpl implements DashboardService {
 	@Autowired
 	private PublishedRepository publishedRepository;
 
-//	public CommonResult getAllDashboard(String user, Integer page, Integer size) {
-	public CommonResult getAllDashboard(String user) {
-	/*	Sort sort = new Sort(Sort.Direction.ASC,"timestamp");
-		PageRequest pageRequest = new PageRequest(page-1, size, sort);
-		Page<Dashboard> dashboard = dashboardRepository.findByUser(user, pageRequest);*/
-		List<Dashboard> dashboard = dashboardRepository.findByUser(user);
-		return new CommonResult().success(dashboard);
+	public CommonResult getAllDashboard(String user,  Map<String,Object> map) {
+		System.out.println("map.size= "+ map.size());
+		if(map.size() != 0) {
+			for(String m : map.keySet()) {
+				System.out.print("key:"+ m);
+				System.out.println("value:"+ map.get(m));
+			}
+		}
+		return null;
+	/*	System.out.printf("user=%s, page =%d, limit =%d, title= %s, status = %s\n",user, page,limit,title, status);
+		Sort sort = new Sort(Sort.Direction.ASC,"timestamp");
+		PageRequest pageRequest = new PageRequest(page-1, limit, sort);
+		Page<Dashboard> dashboard = dashboardRepository.findByUser(user, pageRequest);
+		Map<String,Object> map = new HashMap<>();
+		map.put("items", dashboard);
+		map.put("total", 2);
+		return new CommonResult().success(map);*/
 	}
 
 	public CommonResult getDashboardById(String id) {

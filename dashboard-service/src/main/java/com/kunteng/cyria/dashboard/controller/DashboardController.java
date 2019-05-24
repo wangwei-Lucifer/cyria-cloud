@@ -17,6 +17,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class DashboardController {
@@ -26,13 +27,9 @@ public class DashboardController {
 
 //	@PreAuthorize("#oauth2.hasScope('server') or #name.equals('dashboard')")
 	@RequestMapping(path = "/user/{id}/dashboards", method = RequestMethod.GET)
-	public CommonResult getAllDashboard(@PathVariable String id) {
-		return dashboardService.getAllDashboard(id);
+	public CommonResult getAllDashboard(@PathVariable String id, @RequestBody Map<String,Object> map){
+		return dashboardService.getAllDashboard(id,map);
 	}
-	/*public CommonResult getAllDashboard(@PathVariable String id, @Valid @RequestBody Integer page, @Valid @RequestBody Integer size ){
-		return dashboardService.getAllDashboard(id, page, size);
-	}*/
-
 	@RequestMapping(path = "/user/{id}/dashboards", method = RequestMethod.POST)
 	public CommonResult createNewDashboard(@PathVariable String id, @Valid @RequestBody Translation ts) {
 		return dashboardService.createNewDashboard(id, ts);

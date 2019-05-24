@@ -11,8 +11,7 @@ import org.springframework.data.domain.Pageable;
 
 @Repository
 public interface DashboardRepository extends MongoRepository<Dashboard, String> {
-	//Page<Dashboard> findByUser(String user, Pageable pageable);
-	List<Dashboard> findByUser(String user);
+	Page<Dashboard> findByUser(String user, Pageable pageable);
 	String deleteByHash(String hash);
 	Dashboard findByHash(String id);
 }

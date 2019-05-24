@@ -6,14 +6,14 @@ import com.kunteng.cyria.dashboard.domain.Translation;
 import com.kunteng.cyria.dashboard.utils.CommonResult;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface DashboardService {
 
-	//CommonResult getAllDashboard(String id, Integer page, Integer size);
-	CommonResult getAllDashboard(String id);
+	CommonResult getAllDashboard(String id, Map<String, Object> map);
 	CommonResult getDashboardById(String id);
 	CommonResult createNewDashboard(String id, Translation ts);
 	CommonResult deleteDashboardByHash(String id);
