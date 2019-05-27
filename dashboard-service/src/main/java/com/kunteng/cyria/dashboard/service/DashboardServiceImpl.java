@@ -126,7 +126,8 @@ public class DashboardServiceImpl implements DashboardService {
 			dashboard.setUser(id);
 
 			dashboardRepository.save(dashboard);
-			return new CommonResult().success(dashboard);
+			String hash = dashboard.getHash();
+			return new CommonResult().customHash(hash);
 		}
 		return new CommonResult().failed();
 	}

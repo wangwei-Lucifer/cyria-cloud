@@ -23,6 +23,7 @@ public class CommonResult {
     private String msg;
     private Object data;
     private String id;
+    private String hash;
 
     /**
      * 普通成功返回
@@ -33,6 +34,13 @@ public class CommonResult {
         this.code = SUCCESS;
         this.msg = "操作成功";
         this.data = data;
+        return this;
+    }
+    
+    public CommonResult customHash(String hash) {
+        this.code = SUCCESS;
+        this.msg = "操作成功";
+        this.hash = hash;
         return this;
     }
 
@@ -130,5 +138,13 @@ public class CommonResult {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public String getHash() {
+		return hash;
+	}
+	
+	public void setHash(String hash) {
+		this.hash = hash;
 	}
 }

@@ -1,6 +1,7 @@
 package com.kunteng.cyria.dashboard.service;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,9 +40,26 @@ public class TemplateServiceImpl implements TemplateService {
 	}
 
 	@Override
-	public CommonResult getAllTemplates(Integer page, Integer size) {
+	public CommonResult getAllTemplates(Map<String,Object> map) {
+		int size = map.size();
+		int offset = 0;
+		int limit = 20;
+
+		if(size != 0) {
+			for(String key: map.keySet()) {
+				if (key.equalsIgnoreCase("offset")) {
+					offset = Integer.decode(map.get(key).toString());
+				}
+				
+				if(key.equalsIgnoreCase("limit")) {
+					limit = Integer.decode(map.get(key).toString());
+				}
+			}
+		}
+		System.out.printf("offset: %d, limit: %d\n",offset,limit);
+		
 		Sort sort = new Sort(Sort.Direction.ASC,"timestamp");
-		PageRequest pageRequest = new PageRequest(page, size, sort);
+		PageRequest pageRequest = new PageRequest(offset , limit, sort);
 		Page<Template> template = templateRepository.findAll(pageRequest);
 		return new CommonResult().success(template);
 	}

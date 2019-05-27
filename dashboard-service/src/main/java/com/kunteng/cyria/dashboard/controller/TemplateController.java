@@ -1,11 +1,14 @@
 package com.kunteng.cyria.dashboard.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kunteng.cyria.dashboard.domain.Dashboard;
@@ -22,8 +25,8 @@ public class TemplateController {
 	private TemplateService templateService;
 	
 	@RequestMapping(path = "/templates", method = RequestMethod.GET)
-	public CommonResult getAllTemplates(int page, int size){
-		return templateService.getAllTemplates(page,size);
+	public CommonResult getAllTemplates(@RequestParam Map<String,Object> map){
+		return templateService.getAllTemplates(map);
 	}
 	
 	@RequestMapping(path = "/templates/{id}", method = RequestMethod.GET)

@@ -1,5 +1,7 @@
 package com.kunteng.cyria.dashboard.service;
 
+import java.util.Map;
+
 import org.springframework.data.domain.Page;
 
 import com.kunteng.cyria.dashboard.domain.Published;
@@ -10,7 +12,7 @@ import com.kunteng.cyria.dashboard.utils.CommonResult;
 public interface TemplateService {
 	CommonResult createNewTemplate(Translation translation);
 
-	CommonResult getAllTemplates(Integer page, Integer size);
+	CommonResult getAllTemplates(Map<String,Object> map);
 
 	CommonResult getTemplateById(String id);
 
