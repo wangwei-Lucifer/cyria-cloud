@@ -51,8 +51,8 @@ public class DashboardController {
 	}
 	
 	@RequestMapping(path = "/publish/{id}", method = RequestMethod.POST)
-	public CommonResult publishDashboardById(@PathVariable String id, @RequestParam Map<String,String> map){
-		return dashboardService.publishDashboardById(id, map);
+	public CommonResult publishDashboardById(@PathVariable String id, @RequestBody Object option){
+		return dashboardService.publishDashboardById(id, option);
 	}
 	
 	@RequestMapping(path= "/publish/{id}", method = RequestMethod.GET)

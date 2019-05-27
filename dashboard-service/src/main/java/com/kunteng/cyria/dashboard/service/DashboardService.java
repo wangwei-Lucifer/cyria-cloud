@@ -17,7 +17,7 @@ public interface DashboardService {
 	CommonResult getDashboardById(String id);
 	CommonResult createNewDashboard(String id, Translation ts);
 	CommonResult deleteDashboardByHash(String id);
-	CommonResult publishDashboardById(String id, Map<String,String> map);
+	CommonResult publishDashboardById(String id, Object option);
 	CommonResult getPublishedById(String id);
 	CommonResult updateDashboardById(String id, String db) throws IOException, Exception;
 	CommonResult uploadImage(String id, MultipartFile files) throws IllegalStateException, IOException;

@@ -53,11 +53,12 @@ public class HTTPBearerAuthorizeAttribute implements  Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest)request;
 		String path = httpRequest.getServletPath();
 		
-		RequestWrapper wrapper = new RequestWrapper(httpRequest);
+	//	RequestWrapper wrapper = new RequestWrapper(httpRequest);
 		
-		System.out.printf("path: %s, body: %s\n", path, wrapper.getBody());
+	//	System.out.printf("path: %s, body: %s\n", path, wrapper.getBody());
 		if(path.equalsIgnoreCase("/user/login")) {
-			chain.doFilter(wrapper, response);
+		//	chain.doFilter(wrapper, response);
+			chain.doFilter(request, response);
 			return;
 		}
 		String method = httpRequest.getMethod();

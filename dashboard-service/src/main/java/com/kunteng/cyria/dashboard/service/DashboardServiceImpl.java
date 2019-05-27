@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kunteng.cyria.dashboard.domain.Config;
@@ -25,7 +31,9 @@ import com.kunteng.cyria.dashboard.repository.DashboardRepository;
 import com.kunteng.cyria.dashboard.repository.PublishedRepository;
 import com.kunteng.cyria.dashboard.repository.TemplateRepository;
 import com.kunteng.cyria.dashboard.utils.CommonResult;
+import com.kunteng.cyria.dashboard.utils.RequestWrapper;
 import com.kunteng.cyria.dashboard.utils.Utils;
+import com.mongodb.util.JSON;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONArray;
@@ -94,7 +102,7 @@ public class DashboardServiceImpl implements DashboardService {
 	}
 	
 	public CommonResult createNewDashboard(String id, Translation translation){
-		log.debug("translation=" + translation);
+		log.info("translation=" + translation.toString());
 
 		if(!translation.getIsTemplate()) {
 			Dashboard dashboard = new Dashboard();
@@ -115,7 +123,7 @@ public class DashboardServiceImpl implements DashboardService {
 			dashboard.getConfig().setTimestamp(LocalDate.now());
 			dashboard.getPublish().setStatus("unpublished");
 			dashboard.getPublish().setTimestamp(LocalDate.now());
-			dashboard.setUser(translation.getUser());
+			dashboard.setUser(id);
 
 			dashboardRepository.save(dashboard);
 			return new CommonResult().success(dashboard);
@@ -128,27 +136,21 @@ public class DashboardServiceImpl implements DashboardService {
 		return new CommonResult().success(result);
 	}
 
-	public CommonResult publishDashboardById(String id, Map<String,String> map){
-		String option = "";
-		for(String key : map.keySet()) {
-			System.out.println("key="+key+",value="+map.get(key));
-		}
-		for(Entry<String, String> e:map.entrySet()) {
-			option = e.getValue();
-			if(!option.equalsIgnoreCase("")) {
-				break;
-			}
-		}
-		System.out.println("option="+option);
+	public CommonResult publishDashboardById(String id, Object option) {
+		System.out.println("option="+option.toString());
 		System.out.println("id="+id);
+		
+		String[] temp;
+		temp = option.toString().replaceAll("[\\{\\}]","").split("=");
+		String opt = temp[1];
+		System.out.println("opt="+opt);
 		CommonResult result = new CommonResult();
-		option=option.trim();
 		Dashboard dashboard = dashboardRepository.findByHash(id);
 
-		dashboard.getPublish().setStatus(option);
+		dashboard.getPublish().setStatus(opt);
 		dashboard.getPublish().setTimestamp(LocalDate.now());
 		System.out.println("hash1="+ dashboard.getPublish().getHash());
-		if(option.equals("unpublish")){
+		if(opt.equals("unpublish")){
 			publishedRepository.deleteByHash(dashboard.getPublish().getHash());
 			System.out.println("hash2="+ dashboard.getPublish().getHash());
 			dashboard.getPublish().setHash("");
@@ -157,7 +159,7 @@ public class DashboardServiceImpl implements DashboardService {
 			result.setData(null);
 		}
 		
-		if(option.equals("published")){
+		if(opt.equals("published")){
 			System.out.println("XXXXXXXXXX");
 			Published published = new Published();
 			dashboard.getPublish().setHash(published.getHash());
@@ -169,7 +171,7 @@ public class DashboardServiceImpl implements DashboardService {
 			result.setMsg("发布成功");
 		}
 		
-		if(option.equals("republished")){
+		if(opt.equals("republish")){
 			dashboard.getPublish().setStatus("published");
 			Published published = publishedRepository.findByHash(dashboard.getPublish().getHash());
 			published.setConfig(dashboard.getConfig());
