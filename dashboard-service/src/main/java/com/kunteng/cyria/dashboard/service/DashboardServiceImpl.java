@@ -2,6 +2,7 @@ package com.kunteng.cyria.dashboard.service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,7 +121,7 @@ public class DashboardServiceImpl implements DashboardService {
 					dashboard.setWidget(template.getWidget());
 				}
 			}
-			dashboard.getConfig().setTimestamp(LocalDate.now());
+			dashboard.getConfig().setTimestamp(new Date());
 			dashboard.getPublish().setStatus("unpublished");
 			dashboard.getPublish().setTimestamp(LocalDate.now());
 			dashboard.setUser(id);

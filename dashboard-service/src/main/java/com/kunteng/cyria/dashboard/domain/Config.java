@@ -1,6 +1,7 @@
 package com.kunteng.cyria.dashboard.domain;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public class Config {
 	private String title;
@@ -8,9 +9,9 @@ public class Config {
 	private Integer width;
 	private Integer height;
 	private Integer zoom;
-	private String backgroupColor;
+	private String backgroundColor;
 	private String backPic;
-	private LocalDate timestamp;
+	private Date timestamp;
 
 	public Config(){
 		title = "";
@@ -18,9 +19,9 @@ public class Config {
 		width = 1920;
 		height = 1080;
 		zoom = 100;
-		backgroupColor = "#FFFFFF";
+		backgroundColor = "#FFFFFF";
 		backPic = "";
-		timestamp = LocalDate.now();
+		timestamp = new Date();
 	}
 
 	public String getTitle(){
@@ -64,11 +65,11 @@ public class Config {
 	}
 
 	public String getBackgroupColor(){
-		return this.backgroupColor;
+		return this.backgroundColor;
 	}
 
-	public void setBackgroupColor(String backgroupColor){
-		this.backgroupColor = backgroupColor;
+	public void setBackgroupColor(String backgroundColor){
+		this.backgroundColor = backgroundColor;
 	}
 
 	public String getBackPic(){
@@ -79,11 +80,11 @@ public class Config {
 		this.backPic = backPic;
 	}
 
-	public LocalDate getTimestamp(){
+	public Date getTimestamp(){
 		return this.timestamp;
 	}
 
-	public void setTimestamp(LocalDate timestamp){
+	public void setTimestamp(Date timestamp){
 		this.timestamp = timestamp;
 	}
 }
