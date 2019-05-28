@@ -10,6 +10,7 @@ import net.sf.json.JSONArray;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Date;
 
 
 
@@ -37,7 +38,7 @@ public class Dashboard {
 
 	private String user;
 
-	private LocalDate timestamp;
+	private Date timestamp;
 
 	public Dashboard() {
 		hash = Publish.generateId();
@@ -49,7 +50,7 @@ public class Dashboard {
 		imgUrl = "";
 		imgData = "";
 		user = "";
-		timestamp = LocalDate.now();
+		timestamp = new Date();
 	}
 
 	public String getHash() {
@@ -113,11 +114,11 @@ public class Dashboard {
 		this.user = user;
 	}
 
-	public LocalDate getTimestamp(){
+	public Date getTimestamp(){
 		return this.timestamp;
 	}
 
-	public void setTimestamp(LocalDate timestamp) {
+	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
 

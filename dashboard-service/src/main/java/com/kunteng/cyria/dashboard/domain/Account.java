@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.time.LocalDate;
 
@@ -33,7 +34,7 @@ public class Account {
 
 	private String phone;
 
-	private LocalDate createTime;
+	private Date createTime;
 
 	private List<Role> authorities;
 	
@@ -92,11 +93,11 @@ public class Account {
 		this.phone = phone;
 	}
 
-	public LocalDate getCreateTime(){
+	public Date getCreateTime(){
 		return this.createTime;
 	}
 
-	public void setCreateTime(LocalDate createTime){
+	public void setCreateTime(Date createTime){
 		this.createTime = createTime;
 	}
 

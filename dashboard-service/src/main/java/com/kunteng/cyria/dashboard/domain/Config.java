@@ -64,11 +64,11 @@ public class Config {
 		this.zoom = zoom;
 	}
 
-	public String getBackgroupColor(){
+	public String getBackgroundColor(){
 		return this.backgroundColor;
 	}
 
-	public void setBackgroupColor(String backgroundColor){
+	public void setBackgroundColor(String backgroundColor){
 		this.backgroundColor = backgroundColor;
 	}
 

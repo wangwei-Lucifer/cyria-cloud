@@ -13,6 +13,7 @@ import java.util.List;
 import java.time.LocalDate;
 import java.util.UUID;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 @Document(collection = "publishes")
@@ -37,7 +38,7 @@ public class Published {
 
 	private String user;
 
-	private LocalDate timestamp;
+	private Date timestamp;
 
 	public Published() {
 		hash = Publish.generateId();
@@ -48,7 +49,7 @@ public class Published {
 		level = 0;
 		imgUrl = "";
 		user = "";
-		timestamp = LocalDate.now();
+		timestamp = new Date();
 	}
 
 	public String getHash() {
@@ -115,11 +116,11 @@ public class Published {
 		this.user = user;
 	}
 
-	public LocalDate getTimestamp(){
+	public Date getTimestamp(){
 		return this.timestamp;
 	}
 
-	public void setTimestamp(LocalDate timestamp) {
+	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
 }

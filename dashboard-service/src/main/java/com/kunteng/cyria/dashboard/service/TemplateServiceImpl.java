@@ -1,6 +1,6 @@
 package com.kunteng.cyria.dashboard.service;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class TemplateServiceImpl implements TemplateService {
 			Template template = new Template();
 			template.getConfig().setTitle(translation.getName());
 			template.getConfig().setAbout(translation.getAbout());
-			template.setTimestamp(LocalDate.now());
+			template.setTimestamp(new Date());
 			templateRepository.save(template);
 			return new CommonResult().success(template);
 			

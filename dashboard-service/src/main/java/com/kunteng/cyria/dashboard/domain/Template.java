@@ -13,6 +13,7 @@ import java.util.List;
 import java.time.LocalDate;
 import java.util.UUID;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 @Document(collection = "templates")
@@ -35,7 +36,7 @@ public class Template {
 	
 	private String imgData;
 
-	private LocalDate timestamp;
+	private Date timestamp;
 
 	public Template() {
 		hash = Publish.generateId();
@@ -46,7 +47,7 @@ public class Template {
 		level = 0;
 		imgUrl = "";
 		imgData = "";
-		timestamp = LocalDate.now();
+		timestamp = new Date();
 	}
 
 	public String getHash() {
@@ -103,11 +104,11 @@ public class Template {
 		this.imgUrl = imgUrl;
 	}
 
-	public LocalDate getTimestamp(){
+	public Date getTimestamp(){
 		return this.timestamp;
 	}
 
-	public void setTimestamp(LocalDate timestamp) {
+	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
 	

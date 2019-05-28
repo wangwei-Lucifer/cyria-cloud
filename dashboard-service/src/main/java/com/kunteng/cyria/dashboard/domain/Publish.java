@@ -1,12 +1,13 @@
 package com.kunteng.cyria.dashboard.domain;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.UUID;
 
 public class Publish {
 	private String hash;
 	private String status;
-	private LocalDate timestamp;
+	private Date timestamp;
 
 	public static String generateId() {
                 UUID uuid = UUID.randomUUID();
@@ -34,11 +35,11 @@ public class Publish {
 		this.status = status;
 	}
 
-	public LocalDate getTimestamp(){
+	public Date getTimestamp(){
 		return this.timestamp;
 	}
 
-	public void setTimestamp(LocalDate timestamp){
+	public void setTimestamp(Date timestamp){
 		this.timestamp = timestamp;
 	}
 }

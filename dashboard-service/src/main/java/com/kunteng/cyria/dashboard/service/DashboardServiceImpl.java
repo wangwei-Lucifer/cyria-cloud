@@ -8,14 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -116,14 +111,14 @@ public class DashboardServiceImpl implements DashboardService {
 					dashboard.getConfig().setWidth(template.getConfig().getWidth());
 					dashboard.getConfig().setHeigth(template.getConfig().getHeight());
 					dashboard.getConfig().setZoom(template.getConfig().getZoom());
-					dashboard.getConfig().setBackgroupColor(template.getConfig().getBackgroupColor());
+					dashboard.getConfig().setBackgroundColor(template.getConfig().getBackgroundColor());
 					dashboard.getConfig().setBackPic(template.getConfig().getBackPic());
 					dashboard.setWidget(template.getWidget());
 				}
 			}
 			dashboard.getConfig().setTimestamp(new Date());
 			dashboard.getPublish().setStatus("unpublished");
-			dashboard.getPublish().setTimestamp(LocalDate.now());
+			dashboard.getPublish().setTimestamp(new Date());
 			dashboard.setUser(id);
 
 			dashboardRepository.save(dashboard);
@@ -150,7 +145,7 @@ public class DashboardServiceImpl implements DashboardService {
 		Dashboard dashboard = dashboardRepository.findByHash(id);
 
 		dashboard.getPublish().setStatus(opt);
-		dashboard.getPublish().setTimestamp(LocalDate.now());
+		dashboard.getPublish().setTimestamp(new Date());
 		System.out.println("hash1="+ dashboard.getPublish().getHash());
 		if(opt.equals("unpublish")){
 			publishedRepository.deleteByHash(dashboard.getPublish().getHash());
