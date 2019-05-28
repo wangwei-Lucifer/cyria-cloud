@@ -1,6 +1,8 @@
 package com.kunteng.cyria.dashboard.service;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,8 @@ public class TemplateServiceImpl implements TemplateService {
 			template.getConfig().setAbout(translation.getAbout());
 			template.setTimestamp(new Date());
 			templateRepository.save(template);
-			return new CommonResult().success(template);
+			String hash = template.getHash();
+			return new CommonResult().customHash(hash);
 			
 		}else {
 			return new CommonResult().failed();
@@ -61,7 +64,11 @@ public class TemplateServiceImpl implements TemplateService {
 		Sort sort = new Sort(Sort.Direction.ASC,"timestamp");
 		PageRequest pageRequest = new PageRequest(offset , limit, sort);
 		Page<Template> template = templateRepository.findAll(pageRequest);
-		return new CommonResult().success(template);
+		long sum = templateRepository.count();
+		Map<String,Object> result = new HashMap<>();
+		result.put("items", template);
+		result.put("total",sum);
+		return new CommonResult().success(result);
 	}
 
 	@Override

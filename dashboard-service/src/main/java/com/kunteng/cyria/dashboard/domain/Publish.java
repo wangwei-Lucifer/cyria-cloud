@@ -16,7 +16,7 @@ public class Publish {
 
 	public Publish(){
 		hash = "";
-		status = "unpublished";
+		status = "unpublish";
 	}
 
 	public String getHash(){

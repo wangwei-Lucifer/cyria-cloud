@@ -77,18 +77,24 @@ public class DashboardServiceImpl implements DashboardService {
 		Sort sort = new Sort(Sort.Direction.ASC,"timestamp");
 		PageRequest pageRequest = new PageRequest(page-1, limit, sort);
 		List<Dashboard> dashboard = null;
+		long sum = 0;
 		if(("".equals(title)) && ("".equals(status))) {
 			dashboard = dashboardRepository.findByUser(user, pageRequest);
+			sum = dashboardRepository.countByUser(user);
 		}else if("".equals(title)) {
 			dashboard = dashboardRepository.findByUserAndStatus(user, status, pageRequest);
+			sum = dashboardRepository.countByUserAndStatus(user, status);
 		}else if("".equals(status)) {
 			dashboard = dashboardRepository.findByUserAndTitle(user, title, pageRequest);
+			sum = dashboardRepository.countByUserAndTitle(user, title);
 		}else {
 			dashboard = dashboardRepository.findByUserAndTitleAndStatus(user, title, status, pageRequest);
+			sum = dashboardRepository.countByUserAndTitleAndStatus(user, title, status);
 		}
+
 		Map<String,Object> result = new HashMap<>();
 		result.put("items", dashboard);
-		result.put("total", 2);
+		result.put("total", sum);
 		return new CommonResult().success(result);
 	}
 
