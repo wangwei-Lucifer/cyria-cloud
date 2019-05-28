@@ -64,9 +64,10 @@ public class TemplateServiceImpl implements TemplateService {
 		Sort sort = new Sort(Sort.Direction.ASC,"timestamp");
 		PageRequest pageRequest = new PageRequest(offset , limit, sort);
 		Page<Template> template = templateRepository.findAll(pageRequest);
+		List<Template> obj = template.getContent();
 		long sum = templateRepository.count();
 		Map<String,Object> result = new HashMap<>();
-		result.put("items", template);
+		result.put("items", obj);
 		result.put("total",sum);
 		return new CommonResult().success(result);
 	}
