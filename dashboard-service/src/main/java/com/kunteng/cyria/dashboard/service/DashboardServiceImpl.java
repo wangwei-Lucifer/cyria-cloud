@@ -209,16 +209,19 @@ public class DashboardServiceImpl implements DashboardService {
 			JSONObject configObject = jso.getJSONObject("config");
 			Config config = (Config)JSONObject.toBean(configObject, Config.class);
 			dashboard.setConfig(config);
+			dashboard.setTimestamp(new Date());
 		}
 		if(jso.has("widget")) {
 			JSONArray widget = jso.getJSONArray("widget");
 			dashboard.setWidget(widget);
+			dashboard.setTimestamp(new Date());
 		}
 		if(jso.has("imgData")) {
 			//String path = ResourceUtils.getURL("classpath:").getPath()
 			String imgUrl = Utils.createImage(jso.getString("imgData"),id);
 	//		dashboard.setImgData(jso.getString("imgData"));
 			dashboard.setImgUrl(imgUrl);
+			dashboard.setTimestamp(new Date());
 		}
 		Dashboard result = dashboardRepository.save(dashboard);
 		return new CommonResult().success(result);
