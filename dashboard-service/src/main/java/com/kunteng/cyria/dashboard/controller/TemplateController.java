@@ -40,7 +40,7 @@ public class TemplateController {
 	}
 	
 	@RequestMapping(path ="/templates/{id}", method = RequestMethod.PUT)
-	public CommonResult updateTemplateById(@PathVariable String id, @RequestBody String template) {
+	public CommonResult updateTemplateById(@PathVariable String id, @RequestBody String template) throws Exception {
 		return templateService.updateTemplateById(id, template);
 	}
 	

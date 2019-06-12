@@ -11,16 +11,16 @@ import org.springframework.data.domain.Pageable;
 
 @Repository
 public interface DashboardRepository extends MongoRepository<Dashboard, String> {
-	@Query(value= "{'user':?0}",fields="{'config.title':1, 'user':1, 'hash':1, 'publish.status':1}")
+	@Query(value= "{'user':?0}",fields="{'config.title':1, 'user':1, 'hash':1, 'publish.status':1, 'publish.hash':1}")
 	List<Dashboard> findByUser(String user, Pageable pageable);
 	
-	@Query(value= "{'publish.status':?1}",fields="{'config.title':1, 'user':1, 'hash':1, 'publish.status':1}")
+	@Query(value= "{'publish.status':?1}",fields="{'config.title':1, 'user':1, 'hash':1, 'publish.status':1, 'publish.hash':1}")
 	List<Dashboard> findByUserAndStatus(String user, String status,Pageable pageable);
 	
-	@Query(value= "{'config.title':?1}",fields="{'config.title':1, 'user':1, 'hash':1, 'publish.status':1}")
+	@Query(value= "{'config.title':?1}",fields="{'config.title':1, 'user':1, 'hash':1, 'publish.status':1,'publish.hash':1}")
 	List<Dashboard> findByUserAndTitle(String user, String title,Pageable pageable);
 	
-	@Query(value= "{'config.title':?1, 'publish.status':?2}",fields="{'config.title':1, 'user':1,'hash':1, 'publish.status':1}")
+	@Query(value= "{'config.title':?1, 'publish.status':?2}",fields="{'config.title':1, 'user':1,'hash':1, 'publish.status':1, 'publish.hash':1}")
 	List<Dashboard> findByUserAndTitleAndStatus(String user, String title, String status, Pageable pageable);
 	
 	//@Query(value= "{'user':?0}",count=true)

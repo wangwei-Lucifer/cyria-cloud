@@ -80,7 +80,7 @@ public class TemplateServiceImpl implements TemplateService {
 	}
 	
 	@Override
-	public CommonResult updateTemplateById(String id, String tp) throws Exception {
+	public CommonResult updateTemplateById(String id, String tp) throws Exception  {
 		JSONObject jso = JSONObject.fromObject(tp);
 		Template template = templateRepository.findByHash(id);
 		if(jso.has("config")) {
