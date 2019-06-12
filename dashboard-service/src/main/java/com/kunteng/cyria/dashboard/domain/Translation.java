@@ -22,7 +22,9 @@ public class Translation {
 
 	private String user;
 	
-	private String templateId;
+	private String template;
+	
+	private String mode;
 	
 	public Translation() {
 		name = "";
@@ -31,7 +33,7 @@ public class Translation {
 		level = 0;
 		imgUrl = "";
 		user = "";
-		templateId = "";
+		template = "";
 	}
 
 	public String getName(){
@@ -83,12 +85,20 @@ public class Translation {
 		this.user = user;
 	}
 
-	public String getTemplateId() {
-		return this.templateId;
+	public String getTemplate() {
+		return this.template;
 	}
 
-	public void setTemplateId(String templateId) {
-		this.templateId = templateId;
+	public void setTemplate(String template) {
+		this.template = template;
+	}
+
+	public String getMode() {
+		return this.mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
 	}
 
 }

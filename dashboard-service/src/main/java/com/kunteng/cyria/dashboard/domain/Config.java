@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 public class Config {
+	private Boolean page;
 	private String title;
 	private String about;
 	private Integer width;
@@ -22,6 +23,14 @@ public class Config {
 		backgroundColor = "#FFFFFF";
 		backPic = "";
 		timestamp = new Date();
+	}
+	
+	public Boolean getPage() {
+		return this.page;
+	}
+	
+	public void setPage(Boolean page) {
+		this.page = page;
 	}
 
 	public String getTitle(){

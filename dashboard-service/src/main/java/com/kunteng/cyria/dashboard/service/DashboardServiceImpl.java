@@ -109,17 +109,31 @@ public class DashboardServiceImpl implements DashboardService {
 		if(!translation.getIsTemplate()) {
 			Dashboard dashboard = new Dashboard();
 			
-			dashboard.getConfig().setTitle(translation.getName());
+			dashboard.getConfig().setTitle(translation.getName()); 
 			dashboard.getConfig().setAbout(translation.getAbout());
-			if(!translation.getTemplateId().equals("")) {
-				if(templateRepository.exists(translation.getTemplateId())) {
-					Template template = templateRepository.findByHash(translation.getTemplateId());
-					dashboard.getConfig().setWidth(template.getConfig().getWidth());
-					dashboard.getConfig().setHeigth(template.getConfig().getHeight());
-					dashboard.getConfig().setZoom(template.getConfig().getZoom());
-					dashboard.getConfig().setBackgroundColor(template.getConfig().getBackgroundColor());
-					dashboard.getConfig().setBackPic(template.getConfig().getBackPic());
-					dashboard.setWidget(template.getWidget());
+			if(!translation.getTemplate().equals("") && !translation.getTemplate().equals("blank")) {
+				if(translation.getMode().equals("clone")) {
+					Dashboard db = dashboardRepository.findByHash(translation.getTemplate());
+					if(!db.getHash().equals("")) {
+						dashboard.getConfig().setWidth(db.getConfig().getWidth());
+						dashboard.getConfig().setHeigth(db.getConfig().getHeight());
+						dashboard.getConfig().setZoom(db.getConfig().getZoom());
+						dashboard.getConfig().setBackgroundColor(db.getConfig().getBackgroundColor());
+						dashboard.getConfig().setBackPic(db.getConfig().getBackPic());
+						dashboard.setWidget(db.getWidget());
+						dashboard.getConfig().setPage(true);
+					}
+				} else {
+					Template template = templateRepository.findByHash(translation.getTemplate());
+					if(!template.getHash().equals("")) {
+						dashboard.getConfig().setWidth(template.getConfig().getWidth());
+						dashboard.getConfig().setHeigth(template.getConfig().getHeight());
+						dashboard.getConfig().setZoom(template.getConfig().getZoom());
+						dashboard.getConfig().setBackgroundColor(template.getConfig().getBackgroundColor());
+						dashboard.getConfig().setBackPic(template.getConfig().getBackPic());
+						dashboard.setWidget(template.getWidget());
+						dashboard.getConfig().setPage(true);
+					}
 				}
 			}
 			dashboard.getConfig().setTimestamp(new Date());

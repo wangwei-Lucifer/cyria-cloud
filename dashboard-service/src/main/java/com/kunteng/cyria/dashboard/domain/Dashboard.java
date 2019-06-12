@@ -37,6 +37,8 @@ public class Dashboard {
 	private String imgData;
 
 	private String user;
+	
+	private String group;
 
 	private Date timestamp;
 
@@ -128,6 +130,14 @@ public class Dashboard {
 
 	public void setImgData(String imgData) {
 		this.imgData = imgData;
+	}
+
+	public String getGroup() {
+		return this.group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
 	}
 }
 
