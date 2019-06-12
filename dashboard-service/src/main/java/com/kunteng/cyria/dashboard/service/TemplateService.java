@@ -18,5 +18,5 @@ public interface TemplateService {
 
 	CommonResult deleteTemplateById(String id);
 
-	CommonResult updateTemplateById(String id, String tp);
+	CommonResult updateTemplateById(String id, String tp) throws Exception;
 }

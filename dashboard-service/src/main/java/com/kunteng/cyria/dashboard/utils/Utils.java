@@ -84,7 +84,7 @@ public class Utils {
 		return uploadFile(decoderBytes,filePath, fileName);
 	}
 	
-	public static Object uploadImage(String id, MultipartFile files) throws IllegalStateException, IOException {
+	public static Object uploadImage(String id, MultipartFile file) throws IllegalStateException, IOException, NullPointerException{
 		String hash = null;
 		if(id.isEmpty()) {
 			hash = "anony";
@@ -92,23 +92,39 @@ public class Utils {
 			hash = id;
 		}
 		
-		String fileName = files.getOriginalFilename();
-		String suffixName = fileName.substring(fileName.lastIndexOf("."));
-		String hashName = Utils.hash(fileName)+suffixName;
-		
-		if(suffixName.equalsIgnoreCase(".jpg") || suffixName.equalsIgnoreCase(".jpeg") || suffixName.equalsIgnoreCase(".png")) {
-			File uploadPath = new File(getRootPath() + getImagesPath() + id + "/img/");
-			File uploadFile = new File(getRootPath() + getImagesPath() + id + "/img/" ,hashName);
-			if(!uploadPath.exists()) {
-				uploadPath.mkdirs();
-			}
-			if(!uploadFile.exists()) {
-				uploadFile.createNewFile();
+		System.out.println("id="+id);
+		if(!file.isEmpty()) {
+			try {
+				System.out.println("type="+file.getContentType());
+				System.out.println("name="+file.getName());
+				System.out.println("empty="+file.isEmpty());
+				System.out.println("size="+file.getBytes());
+			}catch(NullPointerException e) {
+				e.printStackTrace();
+				return e.getMessage();
 			}
 			
-			files.transferTo(uploadFile);
-			return getImagesPath() + id + "/img/" + hashName;
+			String fileName = file.getOriginalFilename();
+			String suffixName = fileName.substring(fileName.lastIndexOf("."));
+			String hashName = Utils.hash(fileName)+suffixName;
+			
+			if(suffixName.equalsIgnoreCase(".jpg") || suffixName.equalsIgnoreCase(".jpeg") || suffixName.equalsIgnoreCase(".png")) {
+				File uploadPath = new File(getRootPath() + getImagesPath() + id + "/img/");
+				File uploadFile = new File(getRootPath() + getImagesPath() + id + "/img/" ,hashName);
+				if(!uploadPath.exists()) {
+					uploadPath.mkdirs();
+				}
+				if(!uploadFile.exists()) {
+					uploadFile.createNewFile();
+				}
+				
+				file.transferTo(uploadFile);
+				return getImagesPath() + id + "/img/" + hashName;
+			}else {
+				return null;
+			}
 		}else {
+			System.out.println("files is empty!");
 			return null;
 		}
 		

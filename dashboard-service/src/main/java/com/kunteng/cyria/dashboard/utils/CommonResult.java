@@ -24,6 +24,7 @@ public class CommonResult {
     private Object data;
     private String id;
     private String hash;
+    private String imgUrl;
 
     /**
      * 普通成功返回
@@ -41,6 +42,13 @@ public class CommonResult {
         this.code = SUCCESS;
         this.msg = "操作成功";
         this.hash = hash;
+        return this;
+    }
+    
+    public CommonResult customUpload(String url) {
+        this.code = SUCCESS;
+        this.msg = "操作成功";
+        this.imgUrl = url;
         return this;
     }
 
@@ -146,5 +154,13 @@ public class CommonResult {
 	
 	public void setHash(String hash) {
 		this.hash = hash;
+	}
+
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
 	}
 }

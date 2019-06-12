@@ -17,6 +17,7 @@ public class Config {
 	public Config(){
 		title = "";
 		about = "";
+		page = true;
 		width = 1920;
 		height = 1080;
 		zoom = 100;

@@ -184,7 +184,7 @@ public class DashboardServiceImpl implements DashboardService {
 			published.setWidget(dashboard.getWidget());
 			Published publish =publishedRepository.save(published);
 			result.setCode(0);
-			result.setData(publish);
+			//result.setData(publish);
 			result.setMsg("发布成功");
 		}
 		
@@ -195,7 +195,7 @@ public class DashboardServiceImpl implements DashboardService {
 			published.setWidget(dashboard.getWidget());
 			Published publish = publishedRepository.save(published);
 			result.setCode(0);
-			result.setData(publish);
+		//	result.setData(publish);
 			result.setMsg("重新发布成功");
 		}
 		dashboardRepository.save(dashboard);
@@ -230,8 +230,8 @@ public class DashboardServiceImpl implements DashboardService {
 	}
 
 	@Override
-	public CommonResult uploadImage(String id, MultipartFile files) throws IllegalStateException, IOException {
-		return new CommonResult().success(Utils.uploadImage(id, files));
+	public CommonResult uploadImage(String id, MultipartFile file) throws IllegalStateException, IOException {
+		return new CommonResult().customUpload((String)Utils.uploadImage(id, file));
 	}
 
 }
