@@ -193,6 +193,7 @@ public class DashboardServiceImpl implements DashboardService {
 			Published published = publishedRepository.findByHash(dashboard.getPublish().getHash());
 			published.setConfig(dashboard.getConfig());
 			published.setWidget(dashboard.getWidget());
+			published.getPublish().setTimestamp(new Date());
 			Published publish = publishedRepository.save(published);
 			result.setCode(0);
 		//	result.setData(publish);
