@@ -1,12 +1,20 @@
 package com.kunteng.cyria.dashboard.service;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.util.ResourceUtils;
 
 import com.kunteng.cyria.dashboard.domain.Config;
 import com.kunteng.cyria.dashboard.domain.Dashboard;
@@ -74,7 +83,7 @@ public class DashboardServiceImpl implements DashboardService {
 		}
 
 		System.out.printf("user=%s, page =%d, limit =%d, title= %s, status = %s\n",user, page,limit,title, status);
-		Sort sort = new Sort(Sort.Direction.ASC,"timestamp");
+		Sort sort = new Sort(Sort.Direction.DESC,"timestamp");
 		PageRequest pageRequest = new PageRequest(page-1, limit, sort);
 		List<Dashboard> dashboard = null;
 		long sum = 0;
@@ -116,7 +125,7 @@ public class DashboardServiceImpl implements DashboardService {
 					Dashboard db = dashboardRepository.findByHash(translation.getTemplate());
 					if(!db.getHash().equals("")) {
 						dashboard.getConfig().setWidth(db.getConfig().getWidth());
-						dashboard.getConfig().setHeigth(db.getConfig().getHeight());
+						dashboard.getConfig().setHeigth(db.getConfig().getHeigth());
 						dashboard.getConfig().setZoom(db.getConfig().getZoom());
 						dashboard.getConfig().setBackgroundColor(db.getConfig().getBackgroundColor());
 						dashboard.getConfig().setBackPic(db.getConfig().getBackPic());
@@ -127,7 +136,7 @@ public class DashboardServiceImpl implements DashboardService {
 					Template template = templateRepository.findByHash(translation.getTemplate());
 					if(!template.getHash().equals("")) {
 						dashboard.getConfig().setWidth(template.getConfig().getWidth());
-						dashboard.getConfig().setHeigth(template.getConfig().getHeight());
+						dashboard.getConfig().setHeigth(template.getConfig().getHeigth());
 						dashboard.getConfig().setZoom(template.getConfig().getZoom());
 						dashboard.getConfig().setBackgroundColor(template.getConfig().getBackgroundColor());
 						dashboard.getConfig().setBackPic(template.getConfig().getBackPic());
@@ -235,6 +244,104 @@ public class DashboardServiceImpl implements DashboardService {
 	@Override
 	public CommonResult uploadImage(String id, MultipartFile file) throws IllegalStateException, IOException {
 		return new CommonResult().customUpload((String)Utils.uploadImage(id, file));
+	}
+	
+	private String cmdExec(String cmd, String path) {
+		System.out.println("cmd="+cmd);
+		System.out.println("path="+path);
+		StringBuilder result = new StringBuilder();
+		Process process = null;
+		BufferedReader bufIn = null;
+		BufferedReader bufError = null;
+		String s = null;
+		String line = null;
+		int status = 0;
+		ProcessBuilder pb = new ProcessBuilder(cmd, path);
+		pb.directory(new File(Utils.getRootPath()));
+		
+		try {
+			process = pb.start();
+			try {
+				status = process.waitFor();
+			}catch(InterruptedException e) {
+				e.printStackTrace();
+				s = e.getMessage();
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+			s = e.getMessage();
+		}   
+		
+		try {
+			if(status == 0) {
+				bufIn = new BufferedReader(new InputStreamReader(process.getInputStream(),"UTF-8"));
+				while((line = bufIn.readLine())!= null) {
+					result.append(line).append('\n');
+				}
+				System.out.println("result1="+result.toString());
+				return result.toString();
+			}else {
+				bufError = new BufferedReader(new InputStreamReader(process.getErrorStream(),"UTF-8"));
+				while((line = bufError.readLine())!= null) {
+					result.append(line).append('\n');
+				}
+				System.out.println("result2="+result.toString());
+				return result.toString();
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+			s = e.getMessage();
+		}finally {
+			if(bufIn != null) {
+				try {
+					bufIn.close();
+				}catch(Exception e) {
+					e.printStackTrace();
+					s = e.getMessage();
+				}
+			}
+			if(bufError != null) {
+				try {
+				    bufError.close();
+				}catch(Exception e) {
+					e.printStackTrace();
+					s = e.getMessage();
+				}
+			}
+		}
+		System.out.println("s="+s);
+		return s;
+	}
+	
+	public CommonResult downloadDashboardById(String id) throws IOException {
+		Published published = publishedRepository.findByHash(id);
+		if(!published.getHash().equals("")) {
+			String path = Utils.getRootPath() + "/public/files/";
+			String fileName = id + ".json";
+			File downPath = new File(path);
+			File downFile = new File(path ,fileName);
+			if(!downPath.exists()) {
+				downPath.mkdirs();
+			}
+			if(!downFile.exists()) {
+				downFile.createNewFile();
+			}
+			
+			JSONObject configJSON = JSONObject.fromObject(published.getConfig());
+			String config = configJSON.toString();
+			JSONArray widgetJSON = JSONArray.fromObject(published.getWidget());
+			String widget = widgetJSON.toString();
+			
+			PrintStream ps = new PrintStream(new FileOutputStream(downFile));
+			ps.print("{");
+			ps.append("\"config\":" + config);
+			ps.append(",\"widget\":" + widget);
+			ps.append("}");
+			
+			String result = cmdExec(Utils.getRootPath() + "/scripts/pack.sh", "public/files/"+fileName);
+			return new CommonResult().success(result);
+		}
+		return new CommonResult().failed();
 	}
 
 }

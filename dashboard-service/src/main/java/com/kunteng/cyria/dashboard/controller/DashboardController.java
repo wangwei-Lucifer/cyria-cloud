@@ -64,4 +64,9 @@ public class DashboardController {
 	public CommonResult uploadImage(@PathVariable String id, @RequestParam("file") MultipartFile file) throws IllegalStateException, IOException {
 		return dashboardService.uploadImage(id, file);
 	}
+	
+	@RequestMapping(path = "/download/dashboards/{id}", method = RequestMethod.GET)
+	public CommonResult downloadDashboardById(@PathVariable String id)throws IOException {
+		return dashboardService.downloadDashboardById(id);
+	}
 }

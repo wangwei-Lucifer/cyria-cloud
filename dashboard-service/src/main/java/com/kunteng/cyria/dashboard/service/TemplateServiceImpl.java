@@ -62,7 +62,7 @@ public class TemplateServiceImpl implements TemplateService {
 		}
 		System.out.printf("offset: %d, limit: %d\n",offset,limit);
 		
-		Sort sort = new Sort(Sort.Direction.ASC,"timestamp");
+		Sort sort = new Sort(Sort.Direction.DESC,"timestamp");
 		PageRequest pageRequest = new PageRequest(offset , limit, sort);
 		Page<Template> template = templateRepository.findAll(pageRequest);
 		List<Template> obj = template.getContent();

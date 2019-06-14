@@ -58,7 +58,7 @@ public class Config {
 		this.width = width;
 	}
 
-	public Integer getHeight(){
+	public Integer getHeigth(){
 		return this.height;
 	}
 
