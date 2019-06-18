@@ -128,10 +128,10 @@ public class AccountServiceImpl implements AccountService {
 		return new CommonResult().customFailed("更新用户分组失败");
 	}
 	
-	public CommonResult deleteProject(String id, String key, Map<String, String> map) {
+	public CommonResult deleteProject(String id, String key, Map<String, Map<String,String>> map) {
 		Account account = accountRepository.findAccountById(id);
 		if(!account.getId().equals("")) {
-			account.setProjects(map);
+			account.setProjects(map.get("projects"));
 			accountRepository.save(account);
 			Dashboard dashboard = dashboardRepository.findByProject(key);
 			if(!dashboard.getHash().equals("")) {

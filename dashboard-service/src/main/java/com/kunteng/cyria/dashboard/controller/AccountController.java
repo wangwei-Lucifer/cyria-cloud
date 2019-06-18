@@ -46,7 +46,7 @@ public class AccountController {
 	}
 	
 	@RequestMapping(path = "/user/{id}/projects/{key}", method = RequestMethod.DELETE)
-	public CommonResult deleteProject(@PathVariable String id, @PathVariable String key, @RequestBody Map<String,String> map) {
+	public CommonResult deleteProject(@PathVariable String id, @PathVariable String key, @RequestBody Map<String,Map<String,String>> map) {
 		return accountService.deleteProject(id, key, map);
 	}
 }
