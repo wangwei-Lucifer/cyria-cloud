@@ -62,5 +62,7 @@ public interface DashboardRepository extends MongoRepository<Dashboard, String> 
 	String deleteByHash(String hash);
 	Dashboard findByHash(String id);
 
-	Dashboard findByProject(String key);
+	List<Dashboard> findByProject(String key);
+
+	Long countByProject(String key);
 }

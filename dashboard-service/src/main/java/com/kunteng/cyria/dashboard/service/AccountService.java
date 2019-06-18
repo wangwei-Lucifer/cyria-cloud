@@ -14,5 +14,5 @@ public interface AccountService {
 	CommonResult accountLogin(Account account);
 	CommonResult accountLogout(String username);
 	CommonResult updateProject(String id, Map<String, Map<String,String>> map);
-	CommonResult deleteProject(String id, String key, Map<String, Map<String,String>> map);
+	CommonResult deleteProject(String id, String key, Map<String,Map<String,String>> map);
 }
