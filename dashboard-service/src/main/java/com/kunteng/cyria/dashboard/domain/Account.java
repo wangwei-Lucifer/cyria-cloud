@@ -12,7 +12,9 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.time.LocalDate;
 
 @Document(collection = "accounts")
@@ -40,7 +42,7 @@ public class Account {
 	
 	private ArrayList<String> roles;
 
-	private String group;
+	private Map<String, String> projects;
 
 	private String avatar;
 
@@ -54,6 +56,7 @@ public class Account {
 		this.username = username;
 		this.password = password;
 		this.authorities = authorities;
+		this.projects = new HashMap<String,String>();
 		this.roles  = new ArrayList<String>() {{add("user");add("admin");}}; 
 	}
 
@@ -117,14 +120,6 @@ public class Account {
 		this.roles = roles;
 	}
 
-	public String getGroup(){
-		return group;
-	}
-
-	public void setGroup(String group){
-		this.group = group;
-	}
-
 	public String getAvatar(){
 		return this.avatar;
 	}
@@ -139,5 +134,13 @@ public class Account {
 
 	public void setCity(String city){
 		this.city = city;
+	}
+
+	public Map<String, String> getProjects() {
+		return this.projects;
+	}
+
+	public void setProjects(Map<String, String> projects) {
+		this.projects = projects;
 	}
 }

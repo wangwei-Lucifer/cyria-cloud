@@ -26,6 +26,8 @@ public class Translation {
 	
 	private String mode;
 	
+	private String project;
+	
 	public Translation() {
 		name = "";
 		about = "";
@@ -33,6 +35,7 @@ public class Translation {
 		level = 0;
 		imgUrl = "";
 		user = "";
+		project = "ungrouped";
 		template = "";
 	}
 
@@ -99,6 +102,14 @@ public class Translation {
 
 	public void setMode(String mode) {
 		this.mode = mode;
+	}
+
+	public String getProject() {
+		return this.project;
+	}
+
+	public void setProject(String project) {
+		this.project = project;
 	}
 
 }

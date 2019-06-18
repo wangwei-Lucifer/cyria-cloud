@@ -2,10 +2,12 @@ package com.kunteng.cyria.dashboard.service;
 
 import com.kunteng.cyria.dashboard.client.AuthServiceClient;
 import com.kunteng.cyria.dashboard.domain.Account;
+import com.kunteng.cyria.dashboard.domain.Dashboard;
 import com.kunteng.cyria.dashboard.domain.JWT;
 import com.kunteng.cyria.dashboard.domain.User;
 import com.kunteng.cyria.dashboard.domain.UserLoginDTO;
 import com.kunteng.cyria.dashboard.repository.AccountRepository;
+import com.kunteng.cyria.dashboard.repository.DashboardRepository;
 import com.kunteng.cyria.dashboard.utils.BPwdEncoderUtil;
 import com.kunteng.cyria.dashboard.utils.CommonResult;
 
@@ -20,6 +22,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,6 +39,9 @@ public class AccountServiceImpl implements AccountService {
 
 	@Autowired
 	private AccountRepository accountRepository;
+	
+	@Autowired
+	private DashboardRepository dashboardRepository;
 
 	public CommonResult getAccountByUsername(String id){
 		Account account = accountRepository.findAccountById(id);
@@ -110,5 +116,30 @@ public class AccountServiceImpl implements AccountService {
 	public CommonResult accountLogout(String username){
 		Account account = accountRepository.findAccountByUsername(username);
 		return new CommonResult().success(account);
+	}
+	
+	public CommonResult updateProject(String id, Map<String, Map<String,String>> map) {
+		Account account = accountRepository.findAccountById(id);
+		if(!account.getId().equals("")) {
+			account.setProjects(map.get("projects"));
+			accountRepository.save(account);
+			return new CommonResult().success("更新分组成功");
+		}
+		return new CommonResult().customFailed("更新用户分组失败");
+	}
+	
+	public CommonResult deleteProject(String id, String key, Map<String, String> map) {
+		Account account = accountRepository.findAccountById(id);
+		if(!account.getId().equals("")) {
+			account.setProjects(map);
+			accountRepository.save(account);
+			Dashboard dashboard = dashboardRepository.findByProject(key);
+			if(!dashboard.getHash().equals("")) {
+				dashboard.setProject("ungrouped");
+				dashboardRepository.save(dashboard);
+				return new CommonResult().success("更新用户分组成功");
+			}
+		}
+		return new CommonResult().customFailed("更新用户分组成功");
 	}
 }

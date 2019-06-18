@@ -22,4 +22,5 @@ public interface DashboardService {
 	CommonResult updateDashboardById(String id, String db) throws IOException, Exception;
 	CommonResult uploadImage(String id, MultipartFile file) throws IllegalStateException, IOException;
 	CommonResult downloadDashboardById(String id) throws IOException;
+	CommonResult moveDashboardById(String key, String id);
 }

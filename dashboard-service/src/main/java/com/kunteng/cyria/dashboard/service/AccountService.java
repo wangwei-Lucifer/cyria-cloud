@@ -5,6 +5,7 @@ import com.kunteng.cyria.dashboard.utils.CommonResult;
 import com.kunteng.cyria.dashboard.domain.Translation;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AccountService {
 
@@ -12,4 +13,6 @@ public interface AccountService {
 	CommonResult createNewAccount(Account account);
 	CommonResult accountLogin(Account account);
 	CommonResult accountLogout(String username);
+	CommonResult updateProject(String id, Map<String, Map<String,String>> map);
+	CommonResult deleteProject(String id, String key, Map<String, String> map);
 }

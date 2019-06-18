@@ -41,6 +41,8 @@ public class Dashboard {
 	private String group;
 
 	private Date timestamp;
+	
+	private String project;
 
 	public Dashboard() {
 		hash = Publish.generateId();
@@ -52,6 +54,7 @@ public class Dashboard {
 		imgUrl = "";
 		imgData = "";
 		user = "";
+		project = "ungrouped";
 		timestamp = new Date();
 	}
 
@@ -138,6 +141,14 @@ public class Dashboard {
 
 	public void setGroup(String group) {
 		this.group = group;
+	}
+
+	public String getProject() {
+		return this.project;
+	}
+
+	public void setProject(String project) {
+		this.project = project;
 	}
 }
 

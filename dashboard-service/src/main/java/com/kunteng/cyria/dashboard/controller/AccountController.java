@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class AccountController {
@@ -37,5 +38,15 @@ public class AccountController {
 	@RequestMapping(path = "/user/logout", method = RequestMethod.POST)
 	public CommonResult accountLogout(@RequestBody String username){
 		return accountService.accountLogout(username);
+	}
+	
+	@RequestMapping(path = "/user/{id}/projects", method = RequestMethod.POST)
+	public CommonResult updateProject(@PathVariable String id, @RequestBody Map<String,Map<String,String>> map) {
+		return accountService.updateProject(id, map);
+	}
+	
+	@RequestMapping(path = "/user/{id}/projects/{key}", method = RequestMethod.DELETE)
+	public CommonResult deleteProject(@PathVariable String id, @PathVariable String key, @RequestBody Map<String,String> map) {
+		return accountService.deleteProject(id, key, map);
 	}
 }

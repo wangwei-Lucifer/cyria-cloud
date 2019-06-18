@@ -63,6 +63,7 @@ public class DashboardServiceImpl implements DashboardService {
 		int limit = 20;
 		String title = "";
 		String status = "";
+		String project = "";
 		if(size != 0) {
 			for(String key: map.keySet()) {
 				if (key.equalsIgnoreCase("page")) {
@@ -79,26 +80,47 @@ public class DashboardServiceImpl implements DashboardService {
 				if(key.equalsIgnoreCase("status")) {
 					status = (String) map.get(key);
 				}
+				
+				if(key.equalsIgnoreCase("project")) {
+					project = (String) map.get(key);
+				}
 			}
 		}
 
-		System.out.printf("user=%s, page =%d, limit =%d, title= %s, status = %s\n",user, page,limit,title, status);
+		System.out.printf("user=%s, page =%d, limit =%d, title= %s, status = %s， project = %s\n",user, page,limit,title, status, project);
 		Sort sort = new Sort(Sort.Direction.DESC,"timestamp");
 		PageRequest pageRequest = new PageRequest(page-1, limit, sort);
 		List<Dashboard> dashboard = null;
 		long sum = 0;
-		if(("".equals(title)) && ("".equals(status))) {
-			dashboard = dashboardRepository.findByUser(user, pageRequest);
-			sum = dashboardRepository.countByUser(user);
-		}else if("".equals(title)) {
-			dashboard = dashboardRepository.findByUserAndStatus(user, status, pageRequest);
-			sum = dashboardRepository.countByUserAndStatus(user, status);
-		}else if("".equals(status)) {
-			dashboard = dashboardRepository.findByUserAndTitle(user, title, pageRequest);
-			sum = dashboardRepository.countByUserAndTitle(user, title);
+		if(project.equals("all")) {
+			if(("".equals(title)) && ("".equals(status))) {
+				dashboard = dashboardRepository.findByUser(user, pageRequest);
+				sum = dashboardRepository.countByUser(user);
+			}else if("".equals(title)) {
+				dashboard = dashboardRepository.findByUserAndStatus(user, status, pageRequest);
+				sum = dashboardRepository.countByUserAndStatus(user, status);
+			}else if("".equals(status)) {
+				dashboard = dashboardRepository.findByUserAndTitle(user, title, pageRequest);
+				sum = dashboardRepository.countByUserAndTitle(user, title);
+			}else {
+				dashboard = dashboardRepository.findByUserAndTitleAndStatus(user, title, status, pageRequest);
+				sum = dashboardRepository.countByUserAndTitleAndStatus(user, title, status);
+			}
 		}else {
-			dashboard = dashboardRepository.findByUserAndTitleAndStatus(user, title, status, pageRequest);
-			sum = dashboardRepository.countByUserAndTitleAndStatus(user, title, status);
+			System.out.println("run here!");
+			if(("".equals(title)) && ("".equals(status))) {
+				dashboard = dashboardRepository.findByUserAndProject(user, project, pageRequest);
+				sum = dashboardRepository.countByUserAndProject(user, project);
+			}else if("".equals(title)) {
+				dashboard = dashboardRepository.findByUserAndStatusAndProject(user, status, project, pageRequest);
+				sum = dashboardRepository.countByUserAndStatusAndProject(user, status, project);
+			}else if("".equals(status)) {
+				dashboard = dashboardRepository.findByUserAndTitleAndProject(user, title, project,pageRequest);
+				sum = dashboardRepository.countByUserAndTitleAndProject(user, title, project);
+			}else {
+				dashboard = dashboardRepository.findByUserAndTitleAndStatusAndProject(user, title, status, project, pageRequest);
+				sum = dashboardRepository.countByUserAndTitleAndStatusAndProject(user, title, status, project);
+			}
 		}
 
 		Map<String,Object> result = new HashMap<>();
@@ -114,6 +136,7 @@ public class DashboardServiceImpl implements DashboardService {
 	
 	public CommonResult createNewDashboard(String id, Translation translation){
 		log.info("translation=" + translation.toString());
+		log.info("project = "+ translation.getProject());
 
 		if(!translation.getIsTemplate()) {
 			Dashboard dashboard = new Dashboard();
@@ -131,6 +154,7 @@ public class DashboardServiceImpl implements DashboardService {
 						dashboard.getConfig().setBackPic(db.getConfig().getBackPic());
 						dashboard.setWidget(db.getWidget());
 						dashboard.getConfig().setPage(true);
+						dashboard.setProject(db.getProject());
 					}
 				} else {
 					Template template = templateRepository.findByHash(translation.getTemplate());
@@ -143,6 +167,7 @@ public class DashboardServiceImpl implements DashboardService {
 						dashboard.setWidget(template.getWidget());
 						dashboard.getConfig().setPage(true);
 					}
+					dashboard.setProject("ungrouped");
 				}
 			}
 			dashboard.getConfig().setTimestamp(new Date());
@@ -342,6 +367,18 @@ public class DashboardServiceImpl implements DashboardService {
 			return new CommonResult().success(result);
 		}
 		return new CommonResult().failed();
+	}
+	
+	public CommonResult moveDashboardById(String key, String id) {
+		System.out.println("key :"+key);
+		Dashboard dashboard = dashboardRepository.findByHash(id);
+		if(!dashboard.getHash().equals("")) {
+			dashboard.setProject(key);
+			dashboardRepository.save(dashboard);
+			return new CommonResult().success("分组成功!");
+		}else {
+		    return new CommonResult().customFailed("移动分组失败");
+		}
 	}
 
 }

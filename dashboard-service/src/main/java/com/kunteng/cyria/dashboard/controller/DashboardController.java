@@ -69,4 +69,9 @@ public class DashboardController {
 	public CommonResult downloadDashboardById(@PathVariable String id)throws IOException {
 		return dashboardService.downloadDashboardById(id);
 	}
+	
+	@RequestMapping(path = "/projects/{key}/dashboards/{id}", method = RequestMethod.PUT)
+	public CommonResult moveDashboardById(@PathVariable String key ,@PathVariable String id){
+		return dashboardService.moveDashboardById(key, id);
+	}
 }
