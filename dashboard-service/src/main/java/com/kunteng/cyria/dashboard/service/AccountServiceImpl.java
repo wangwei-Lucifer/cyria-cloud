@@ -11,6 +11,9 @@ import com.kunteng.cyria.dashboard.repository.DashboardRepository;
 import com.kunteng.cyria.dashboard.utils.BPwdEncoderUtil;
 import com.kunteng.cyria.dashboard.utils.CommonResult;
 
+import net.sf.json.JSONObject;
+
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,9 +132,11 @@ public class AccountServiceImpl implements AccountService {
 	}
 	
 	public CommonResult deleteProject(String id, String key, Map<String,Map<String,String>> map) {
-		System.out.println("id="+id);
-		System.out.println("key="+key);
-		System.out.println("map.size="+map.size());
+		JSONObject jsonObject = JSONObject.fromObject(map);
+		String project = jsonObject.toString();
+		
+		System.out.println("projects="+ project);
+		
 		Account account = accountRepository.findAccountById(id);
 		if(!account.getId().equals("")) {
 			account.setProjects(map.get("projects"));
@@ -144,6 +149,6 @@ public class AccountServiceImpl implements AccountService {
 			}
 			return new CommonResult().success("更新用户分组成功");
 		}
-		return new CommonResult().customFailed("更新用户分组成功");
+		return new CommonResult().customFailed("更新用户分组失败");
 	}
 }

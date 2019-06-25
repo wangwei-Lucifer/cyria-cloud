@@ -148,7 +148,7 @@ public class DashboardServiceImpl implements DashboardService {
 					Dashboard db = dashboardRepository.findByHash(translation.getTemplate());
 					if(!db.getHash().equals("")) {
 						dashboard.getConfig().setWidth(db.getConfig().getWidth());
-						dashboard.getConfig().setHeigth(db.getConfig().getHeigth());
+						dashboard.getConfig().setHeight(db.getConfig().getHeight());
 						dashboard.getConfig().setZoom(db.getConfig().getZoom());
 						dashboard.getConfig().setBackgroundColor(db.getConfig().getBackgroundColor());
 						dashboard.getConfig().setBackPic(db.getConfig().getBackPic());
@@ -160,7 +160,7 @@ public class DashboardServiceImpl implements DashboardService {
 					Template template = templateRepository.findByHash(translation.getTemplate());
 					if(!template.getHash().equals("")) {
 						dashboard.getConfig().setWidth(template.getConfig().getWidth());
-						dashboard.getConfig().setHeigth(template.getConfig().getHeigth());
+						dashboard.getConfig().setHeight(template.getConfig().getHeight());
 						dashboard.getConfig().setZoom(template.getConfig().getZoom());
 						dashboard.getConfig().setBackgroundColor(template.getConfig().getBackgroundColor());
 						dashboard.getConfig().setBackPic(template.getConfig().getBackPic());

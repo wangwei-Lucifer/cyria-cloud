@@ -58,11 +58,11 @@ public class Config {
 		this.width = width;
 	}
 
-	public Integer getHeigth(){
+	public Integer getHeight(){
 		return this.height;
 	}
 
-	public void setHeigth(Integer height){
+	public void setHeight(Integer height){
 		this.height = height;
 	}
 

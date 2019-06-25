@@ -57,7 +57,8 @@ public class Account {
 		this.password = password;
 		this.authorities = authorities;
 		this.projects = new HashMap<String,String>();
-		this.roles  = new ArrayList<String>() {{add("user");add("admin");}}; 
+		this.roles  = new ArrayList<String>() {{add("user");add("admin");}};
+		this.avatar = "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif";
 	}
 
 	public String getId() {
