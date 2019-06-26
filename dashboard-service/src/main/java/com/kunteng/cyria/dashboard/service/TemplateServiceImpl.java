@@ -64,7 +64,7 @@ public class TemplateServiceImpl implements TemplateService {
 		
 		Sort sort = new Sort(Sort.Direction.DESC,"timestamp");
 		PageRequest pageRequest = new PageRequest(offset , limit, sort);
-		Page<Template> template = templateRepository.findAll(pageRequest);
+		Page<Template> template = templateRepository.findByHashNotNull(pageRequest);
 		List<Template> obj = template.getContent();
 		long sum = templateRepository.count();
 		Map<String,Object> result = new HashMap<>();
