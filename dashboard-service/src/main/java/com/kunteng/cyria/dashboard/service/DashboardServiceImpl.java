@@ -170,9 +170,9 @@ public class DashboardServiceImpl implements DashboardService {
 					dashboard.setProject("ungrouped");
 				}
 			}
-			dashboard.getConfig().setTimestamp(new Date());
-			dashboard.getPublish().setStatus("unpublished");
-			dashboard.getPublish().setTimestamp(new Date());
+			dashboard.getConfig().setTimestamp(new Date().getTime());
+			dashboard.getPublish().setStatus("unpublish");
+			dashboard.getPublish().setTimestamp(new Date().getTime());
 			dashboard.setUser(id);
 
 			dashboardRepository.save(dashboard);
@@ -199,7 +199,7 @@ public class DashboardServiceImpl implements DashboardService {
 		Dashboard dashboard = dashboardRepository.findByHash(id);
 
 		dashboard.getPublish().setStatus(opt);
-		dashboard.getPublish().setTimestamp(new Date());
+		dashboard.getPublish().setTimestamp(new Date().getTime());
 		System.out.println("hash1="+ dashboard.getPublish().getHash());
 		if(opt.equals("unpublish")){
 			publishedRepository.deleteByHash(dashboard.getPublish().getHash());
@@ -216,6 +216,7 @@ public class DashboardServiceImpl implements DashboardService {
 			dashboard.getPublish().setHash(published.getHash());
 			published.setConfig(dashboard.getConfig());
 			published.setWidget(dashboard.getWidget());
+			published.getPublish().setTimestamp(new Date().getTime());
 			Published publish =publishedRepository.save(published);
 			result.setCode(0);
 			//result.setData(publish);
@@ -227,7 +228,7 @@ public class DashboardServiceImpl implements DashboardService {
 			Published published = publishedRepository.findByHash(dashboard.getPublish().getHash());
 			published.setConfig(dashboard.getConfig());
 			published.setWidget(dashboard.getWidget());
-			published.getPublish().setTimestamp(new Date());
+			published.getPublish().setTimestamp(new Date().getTime());
 			Published publish = publishedRepository.save(published);
 			result.setCode(0);
 		//	result.setData(publish);
@@ -244,18 +245,18 @@ public class DashboardServiceImpl implements DashboardService {
 			JSONObject configObject = jso.getJSONObject("config");
 			Config config = (Config)JSONObject.toBean(configObject, Config.class);
 			dashboard.setConfig(config);
-			dashboard.getConfig().setTimestamp(new Date());
+			dashboard.getConfig().setTimestamp(new Date().getTime());
 		}
 		if(jso.has("widget")) {
 			JSONArray widget = jso.getJSONArray("widget");
 			dashboard.setWidget(widget);
-			dashboard.getConfig().setTimestamp(new Date());
+			dashboard.getConfig().setTimestamp(new Date().getTime());
 		}
 		if(jso.has("imgData")) {
 			String imgUrl = Utils.createImage(jso.getString("imgData"),id);
 	//		dashboard.setImgData(jso.getString("imgData"));
 			dashboard.setImgUrl(imgUrl);
-			dashboard.getConfig().setTimestamp(new Date());
+			dashboard.getConfig().setTimestamp(new Date().getTime());
 		}
 		Dashboard result = dashboardRepository.save(dashboard);
 		return new CommonResult().success(result);

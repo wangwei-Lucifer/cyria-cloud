@@ -40,7 +40,7 @@ public class Dashboard {
 	
 	private String group;
 
-	private Date timestamp;
+	private long timestamp;
 	
 	private String project;
 
@@ -55,7 +55,7 @@ public class Dashboard {
 		imgData = "";
 		user = "";
 		project = "ungrouped";
-		timestamp = new Date();
+		timestamp = new Date().getTime();
 	}
 
 	public String getHash() {
@@ -119,11 +119,11 @@ public class Dashboard {
 		this.user = user;
 	}
 
-	public Date getTimestamp(){
+	public long getTimestamp(){
 		return this.timestamp;
 	}
 
-	public void setTimestamp(Date timestamp) {
+	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 	}
 

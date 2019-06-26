@@ -38,7 +38,7 @@ public class Published {
 
 	private String user;
 
-	private Date timestamp;
+	private long timestamp;
 
 	public Published() {
 		hash = Publish.generateId();
@@ -49,7 +49,7 @@ public class Published {
 		level = 0;
 		imgUrl = "";
 		user = "";
-		timestamp = new Date();
+		timestamp = new Date().getTime();
 	}
 
 	public String getHash() {
@@ -116,11 +116,11 @@ public class Published {
 		this.user = user;
 	}
 
-	public Date getTimestamp(){
+	public long getTimestamp(){
 		return this.timestamp;
 	}
 
-	public void setTimestamp(Date timestamp) {
+	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 	}
 }

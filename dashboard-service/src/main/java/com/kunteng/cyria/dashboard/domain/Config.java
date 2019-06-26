@@ -12,7 +12,7 @@ public class Config {
 	private Integer zoom;
 	private String backgroundColor;
 	private String backPic;
-	private Date timestamp;
+	private long timestamp;
 
 	public Config(){
 		title = "";
@@ -23,7 +23,7 @@ public class Config {
 		zoom = 100;
 		backgroundColor = "#FFFFFF";
 		backPic = "";
-		timestamp = new Date();
+		timestamp = new Date().getTime();
 	}
 	
 	public Boolean getPage() {
@@ -90,11 +90,11 @@ public class Config {
 		this.backPic = backPic;
 	}
 
-	public Date getTimestamp(){
+	public long getTimestamp(){
 		return this.timestamp;
 	}
 
-	public void setTimestamp(Date timestamp){
+	public void setTimestamp(long timestamp){
 		this.timestamp = timestamp;
 	}
 }

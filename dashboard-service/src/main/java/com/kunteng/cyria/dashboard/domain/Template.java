@@ -36,7 +36,7 @@ public class Template {
 	
 	private String imgData;
 
-	private Date timestamp;
+	private long timestamp;
 
 	public Template() {
 		hash = Publish.generateId();
@@ -47,7 +47,7 @@ public class Template {
 		level = 0;
 		imgUrl = "";
 		imgData = "";
-		timestamp = new Date();
+		timestamp = new Date().getTime();
 	}
 
 	public String getHash() {
@@ -104,11 +104,11 @@ public class Template {
 		this.imgUrl = imgUrl;
 	}
 
-	public Date getTimestamp(){
+	public long getTimestamp(){
 		return this.timestamp;
 	}
 
-	public void setTimestamp(Date timestamp) {
+	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 	}
 	

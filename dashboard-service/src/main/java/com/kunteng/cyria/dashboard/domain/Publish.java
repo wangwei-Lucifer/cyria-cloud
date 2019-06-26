@@ -7,7 +7,7 @@ import java.util.UUID;
 public class Publish {
 	private String hash;
 	private String status;
-	private Date timestamp;
+	private long timestamp;
 
 	public static String generateId() {
                 UUID uuid = UUID.randomUUID();
@@ -35,11 +35,11 @@ public class Publish {
 		this.status = status;
 	}
 
-	public Date getTimestamp(){
+	public long getTimestamp(){
 		return this.timestamp;
 	}
 
-	public void setTimestamp(Date timestamp){
+	public void setTimestamp(long timestamp){
 		this.timestamp = timestamp;
 	}
 }
