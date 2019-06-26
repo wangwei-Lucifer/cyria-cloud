@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[12],{"Wl+1":function(o,n,i){"use strict";i.r(n);var e={name:"AuthRedirect",created:function(){var o=window.location.search.slice(1);window.opener.location.href=window.location.origin+"/login#"+o,window.close()}},c=i("KHd+"),l=Object(c.a)(e,void 0,void 0,!1,null,null,null);n.default=l.exports}}]);
-//# sourceMappingURL=12.fd846bf1ca106eab549c.js.map

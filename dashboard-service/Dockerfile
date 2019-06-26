@@ -6,7 +6,7 @@ RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shang
 VOLUME /app/static
 ADD ./target/dashboard-service.jar /app/
 ADD ./target/classes/scripts/pack.sh /app/static/scripts/
-ADD ./target/classes/static/public/dist /app/static/public/dist/
+ADD ./target/classes/static/dist /app/static/public/dist/
 
 CMD ["java", "-Xmx200m", "-jar", "/app/dashboard-service.jar"]
 
