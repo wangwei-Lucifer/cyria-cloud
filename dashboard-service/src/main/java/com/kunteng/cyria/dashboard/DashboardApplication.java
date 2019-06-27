@@ -49,31 +49,26 @@ public class DashboardApplication extends ResourceServerConfigurerAdapter {
 	@Bean
 	@ConfigurationProperties(prefix = "security.oauth2.client")
 	public ClientCredentialsResourceDetails clientCredentialsResourceDetails() {
-		System.out.println("A");
 		return new ClientCredentialsResourceDetails();
 	}
 
 	@Bean
 	public RequestInterceptor oauth2FeignRequestInterceptor(){
-		System.out.println("B");
 		return new OAuth2FeignRequestInterceptor(new DefaultOAuth2ClientContext(), clientCredentialsResourceDetails());
 	}
 
 	@Bean
 	public OAuth2RestTemplate clientCredentialsRestTemplate() {
-		System.out.println("C");
 		return new OAuth2RestTemplate(clientCredentialsResourceDetails());
 	}
 
 	@Bean
 	public ResourceServerTokenServices tokenServices() {
-		System.out.println("D");
 		return new CustomUserInfoTokenServices(sso.getUserInfoUri(), sso.getClientId());
 	}
 	
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		System.out.println("F");
 		http.authorizeRequests()
 				.antMatchers("/user/register","/user/login","/upload/image/*","/static/upload/dashboards/*","/**").permitAll()
 				.anyRequest().authenticated();
