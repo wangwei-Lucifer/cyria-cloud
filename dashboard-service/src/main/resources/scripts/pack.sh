@@ -23,9 +23,10 @@ echo ${START}$(cat $CONFIG)${END} > ${TEMP_DIR}/www/static/js/${CONFIG_JS}
 cd ${TEMP_DIR}
 
 # make zipfile
-zip -rq -o ${FILE_NAME}.zip www
+#zip -rq -o ${FILE_NAME}.zip www
+tar -zcf ${FILE_NAME}.tar.gz www
 
 rm www -rf
 
-# remove public && return
-echo -n ${TEMP_DIR#*/}/${FILE_NAME}.zip
+# return
+echo -n ${TEMP_DIR}/${FILE_NAME}.tar.gz
