@@ -78,7 +78,7 @@ public class Dashboard {
 	public void setWidget(JSONArray widget) {
 		this.widget = widget;
 	}
-
+               
 	public Publish getPublish(){
 		return this.publish;
 	}

@@ -20,6 +20,8 @@ public class Utils {
 	
 	private static final String imagesPath = "/upload/images/";
 	
+	private static final String csvPath = "/csv/";
+	
 	public static String getRootPath(){
 	/*	File rootPath = new File(ResourceUtils.getURL("classpath:").getPath());
 		return rootPath.getAbsolutePath();*/
@@ -33,6 +35,10 @@ public class Utils {
 	
 	public static String getImagesPath() {
 		return imagesPath;
+	}
+	
+	public static String getCsvPath() {
+		return csvPath;
 	}
 	
 	public static String hash(String password) {
