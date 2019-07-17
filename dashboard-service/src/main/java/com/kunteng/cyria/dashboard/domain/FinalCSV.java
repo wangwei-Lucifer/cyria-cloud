@@ -1,6 +1,7 @@
 package com.kunteng.cyria.dashboard.domain;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class FinalCSV {
 	private String fileName;
 	private  ArrayList<TitleCell> title;
-	private ArrayList<DataCell> data;
+	private ArrayList<Map<String,String>> data;
 	
 	public String getFileName() {
 		return this.fileName;
@@ -27,11 +28,11 @@ public class FinalCSV {
 	}
 	
 	
-	public ArrayList<DataCell> getData() {
+	public ArrayList<Map<String,String>> getData() {
 		return this.data;
 	}
 	
-	public void setData(ArrayList<DataCell> data) {
+	public void setData(ArrayList<Map<String,String>> data) {
 		this.data = data;
 	}
 }
