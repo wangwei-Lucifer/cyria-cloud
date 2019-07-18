@@ -19,11 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.kunteng.cyria.dashboard.domain.DataCell;
-import com.kunteng.cyria.dashboard.domain.TempCSV;
+import com.kunteng.cyria.dashboard.domain.FinalCSV;
+import com.kunteng.cyria.dashboard.domain.RawCSV;
 import com.kunteng.cyria.dashboard.domain.TitleCell;
-import com.kunteng.cyria.dashboard.repository.FileCSVRepository;
-import com.kunteng.cyria.dashboard.repository.TempCSVRepository;
+import com.kunteng.cyria.dashboard.repository.FinalCSVRepository;
+import com.kunteng.cyria.dashboard.repository.RawCSVRepository;
 import com.kunteng.cyria.dashboard.utils.CommonResult;
 import com.kunteng.cyria.dashboard.utils.Utils;
 import com.opencsv.CSVParser;
@@ -35,10 +35,10 @@ import feign.Logger;
 public class FileCSVServiceImpl implements FileCSVService {
 	
 	@Autowired
-	private FileCSVRepository fileCSVRepository;
+	private FinalCSVRepository finalCSVRepository;
 	
 	@Autowired
-	private TempCSVRepository tempCSVRepository;
+	private RawCSVRepository rawCSVRepository;
 	
 	public  boolean isCsv(String fileName) {
 		if(fileName.endsWith(".csv")) {
@@ -48,13 +48,13 @@ public class FileCSVServiceImpl implements FileCSVService {
 		}
 	}
 	
-	private String readCSV(String fileName, File filePath) {
+	private CommonResult readCSV(String fileName, File filePath) {
 		try {
-			TempCSV tempCSV = new TempCSV();
-			tempCSV.setFileName(fileName);
+			RawCSV rawCSV = new RawCSV();
+			rawCSV.setFileName(fileName);
 			
 			DataInputStream in = new DataInputStream(new FileInputStream(filePath));
-			CSVReader csvReader = new CSVReader(new InputStreamReader(in, "UTF-8"));
+			CSVReader csvReader = new CSVReader(new InputStreamReader(in, "GB2312"));
 			
 			ArrayList<TitleCell> titleHeader = new ArrayList<TitleCell>();
 			String[] header = csvReader.readNext();
@@ -63,7 +63,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 				title.setTitle(header[i]);
 				titleHeader.add(title);
 			}
-			tempCSV.setTitle(titleHeader);
+			rawCSV.setTitle(titleHeader);
 			
 			
 			ArrayList< Map<String,String>> dataList = new ArrayList< Map<String,String>>();
@@ -75,20 +75,56 @@ public class FileCSVServiceImpl implements FileCSVService {
 				} 
 				dataList.add(map);
 			}
-			tempCSV.setData(dataList);
+			rawCSV.setData(dataList);
 			csvReader.close();
 		
-			tempCSVRepository.save(tempCSV);
+			RawCSV save = rawCSVRepository.save(rawCSV);
+			
+			return new CommonResult().success(rawCSV);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		return fileName;
+		return new CommonResult().failed();
 	}
 	
-	private String testCSV(String fileName) {
+/*	private boolean titleListEqual(ArrayList<TitleCell> A1, ArrayList<TitleCell> A2) {
+		if(A1.size() == A2.size()){
+			for(int i =0 ; i < A1.size();i++) {
+				if(!A1.get(i).getTitle().equals(A2.get(i).getTitle())) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
 		
-		return fileName;
 	}
+	
+	private CommonResult testCSV(String fileName) {
+		FinalCSV finalCSV = finalCSVRepository.findByFileName(fileName);
+		RawCSV rawCSV = rawCSVRepository.findByFileName(fileName);
+		
+		CommonResult result = new CommonResult();
+		if(finalCSV.getFileName().equals(rawCSV.getFileName())) {
+			if(titleListEqual(finalCSV.getTitle(),rawCSV.getTitle())) {
+				result.setCode(1001);
+				result.setMsg("该数据表已存在，要如何处理?");
+				return result;
+			}else {
+				result.setCode(1002);
+				result.setMsg("数据表名称冲突，请修改名称");
+				return result;
+			}
+		}
+		
+		finalCSV.setFileName(rawCSV.getFileName());
+		finalCSV.setTitle(rawCSV.getTitle());
+		finalCSV.setData(rawCSV.getData());
+		finalCSVRepository.save(rawCSV);
+		rawCSVRepository.delete(id);
+		return new CommonResult().success("上传成功！");
+		
+	}*/
 	
 	
 	public CommonResult uploadFileCSV(MultipartFile file) throws IOException {
@@ -113,47 +149,8 @@ public class FileCSVServiceImpl implements FileCSVService {
 		} 
 		
 		file.transferTo(restore);
-		String result = readCSV(fileName,restore);
-		/*try {
-			TempCSV tempCSV = new TempCSV();
-			tempCSV.setFileName(prefixName);
-			
-			DataInputStream in = new DataInputStream(new FileInputStream(restore));
-			CSVReader csvReader = new CSVReader(new InputStreamReader(in, "UTF-8"));
-			
-			ArrayList<TitleCell> titleHeader = new ArrayList<TitleCell>();
-			String[] header = csvReader.readNext();
-			for(int i=0; i < header.length; i++) {
-				TitleCell title = new TitleCell();
-				title.setTitle(header[i]);
-				titleHeader.add(title);
-			}
-			tempCSV.setTitle(titleHeader);
-			
-			
-			ArrayList< Map<String,String>> dataList = new ArrayList< Map<String,String>>();
-			String[] str;
-			while((str = csvReader.readNext())!= null) {
-				Map<String,String> map = new HashMap<>();
-				for(int i=0;i < str.length; i++) {
-				//	DataCell data = new DataCell();
-				//	data.setTitle(header[i]);
-				//	data.setValue(str[i]);
-				//	Map<String,String> map = new HashMap<>();
-					map.put(header[i], str[i]);
-				//	dataList.add(map);
-				} 
-				dataList.add(map);
-			}
-			tempCSV.setData(dataList);
-			csvReader.close();
-		
-			tempCSVRepository.save(tempCSV);
-		}catch(Exception e) {
-			e.printStackTrace();
-		}*/
-		return null;
-		
+		CommonResult result = readCSV(fileName,restore);
+		return result;	
 	}
 
 }

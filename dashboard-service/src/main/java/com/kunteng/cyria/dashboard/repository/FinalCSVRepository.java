@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 import com.kunteng.cyria.dashboard.domain.FinalCSV;
 
 @Repository
-public interface FileCSVRepository extends MongoRepository<FinalCSV, String> {
+public interface FinalCSVRepository extends MongoRepository<FinalCSV, String> {
+
+	FinalCSV findByFileName(String fileName);
 
 }
