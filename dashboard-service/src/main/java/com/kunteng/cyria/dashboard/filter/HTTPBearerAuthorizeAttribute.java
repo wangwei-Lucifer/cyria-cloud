@@ -22,7 +22,7 @@ import com.kunteng.cyria.dashboard.utils.CommonResult;
 import com.kunteng.cyria.dashboard.utils.RequestWrapper;
 
 //@Component
-@WebFilter(urlPatterns= {"/bashboards/*","/templates/*","/publish/*","/user/*","/projects/*"}, filterName="HTTPBearerAuthorizeAttribute")
+@WebFilter(urlPatterns= {"/bashboards/*","/templates/*","/publish/*","/user/*","/projects/*","/material/*"}, filterName="HTTPBearerAuthorizeAttribute")
 public class HTTPBearerAuthorizeAttribute implements  Filter {
 	@Autowired
 	private AuthServiceClient client;

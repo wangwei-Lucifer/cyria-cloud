@@ -5,12 +5,14 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kunteng.cyria.dashboard.domain.RawCSV;
 import com.kunteng.cyria.dashboard.service.FileCSVService;
 import com.kunteng.cyria.dashboard.utils.CommonResult;
 
@@ -30,8 +32,10 @@ public class FileCSVController {
 		return fileCSVService.getCSVList(map);
 	}
 	
-	@RequestMapping(path = "/material/save", method = RequestMethod.POST)
-	public CommonResult saveCSVTitle(@RequestParam Map<String,Object> map){
-		return fileCSVService.saveCSVTitle(map);
+	@RequestMapping(path = "/material/{hash}/save", method = RequestMethod.POST)
+	public CommonResult saveCSVTitle(@PathVariable String hash, @RequestBody RawCSV rawCSV){
+		System.out.println("materail/save");
+		System.out.println(hash);
+		return fileCSVService.saveCSVTitle(hash, rawCSV);
 	}
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kunteng.cyria.dashboard.domain.RawCSV;
 import com.kunteng.cyria.dashboard.utils.CommonResult;
 
 public interface FileCSVService {
@@ -13,6 +14,6 @@ public interface FileCSVService {
 
 	CommonResult getCSVList(Map<String, Object> map);
 
-	CommonResult saveCSVTitle(Map<String, Object> map);
+	CommonResult saveCSVTitle(String hash, RawCSV map);
 	
 }
