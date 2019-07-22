@@ -14,6 +14,11 @@ public interface FileCSVService {
 
 	CommonResult getCSVList(Map<String, Object> map);
 
-	CommonResult saveCSVTitle(String hash, RawCSV map);
+	CommonResult viewCSVByHash(String hash);
 	
+	CommonResult deleteCSVByHash(String hash);
+	
+	CommonResult saveCSVTitle(String hash, RawCSV rawCSV);
+	
+	CommonResult updateCSVData(String hash, MultipartFile file) throws IOException;
 }

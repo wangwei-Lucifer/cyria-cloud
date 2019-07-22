@@ -3,6 +3,7 @@ package com.kunteng.cyria.dashboard.controller;
 import java.io.IOException;
 import java.util.Map;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,8 +35,21 @@ public class FileCSVController {
 	
 	@RequestMapping(path = "/material/{hash}/save", method = RequestMethod.POST)
 	public CommonResult saveCSVTitle(@PathVariable String hash, @RequestBody RawCSV rawCSV){
-		System.out.println("materail/save");
-		System.out.println(hash);
 		return fileCSVService.saveCSVTitle(hash, rawCSV);
+	}
+	
+	@RequestMapping(path = "/material/{hash}/view", method = RequestMethod.GET)
+	public CommonResult viewCSVByHash(@PathVariable String hash) {
+		return fileCSVService.viewCSVByHash(hash);
+	}
+	
+	@RequestMapping(path = "/material/{hash}/delete", method = RequestMethod.DELETE)
+	public CommonResult deleteCSVByHash(@PathVariable String hash) {
+		return fileCSVService.deleteCSVByHash(hash);
+	}
+	
+	@RequestMapping(path = "/material/{hash}/update", method = RequestMethod.POST)
+	public CommonResult updateCSVData(String hash, MultipartFile file) throws IOException{
+		return fileCSVService.updateCSVData(hash, file);
 	}
 }

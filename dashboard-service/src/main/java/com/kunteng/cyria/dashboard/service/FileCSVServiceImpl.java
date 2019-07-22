@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import java.util.regex.Pattern;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kunteng.cyria.dashboard.domain.FinalCSV;
 import com.kunteng.cyria.dashboard.domain.RawCSV;
+import com.kunteng.cyria.dashboard.domain.Template;
 import com.kunteng.cyria.dashboard.domain.TitleCell;
 import com.kunteng.cyria.dashboard.repository.FinalCSVRepository;
 import com.kunteng.cyria.dashboard.repository.RawCSVRepository;
@@ -86,12 +89,16 @@ public class FileCSVServiceImpl implements FileCSVService {
 	}
 	
 	private static boolean isChinaProvince(String str) {
-		for(int i =0;i <tableProvinces.size(); i++) {
-			if(tableProvinces.get(i).indexOf(str)!= -1) {
-				return true;
+		if(str.isEmpty()) {
+			return false;
+		}else {
+			for(int i =0;i <tableProvinces.size(); i++) {
+				if(tableProvinces.get(i).indexOf(str)!= -1) {
+					return true;
+				}
 			}
+			return false;
 		}
-		return false;
 	}
 	
 	public  boolean isCsv(String fileName) {
@@ -144,45 +151,6 @@ public class FileCSVServiceImpl implements FileCSVService {
 		return new CommonResult().failed();
 	}
 	
-/*	private boolean titleListEqual(ArrayList<TitleCell> A1, ArrayList<TitleCell> A2) {
-		if(A1.size() == A2.size()){
-			for(int i =0 ; i < A1.size();i++) {
-				if(!A1.get(i).getTitle().equals(A2.get(i).getTitle())) {
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
-		
-	}
-	
-	private CommonResult testCSV(String fileName) {
-		FinalCSV finalCSV = finalCSVRepository.findByFileName(fileName);
-		RawCSV rawCSV = rawCSVRepository.findByFileName(fileName);
-		
-		CommonResult result = new CommonResult();
-		if(finalCSV.getFileName().equals(rawCSV.getFileName())) {
-			if(titleListEqual(finalCSV.getTitle(),rawCSV.getTitle())) {
-				result.setCode(1001);
-				result.setMsg("该数据表已存在，要如何处理?");
-				return result;
-			}else {
-				result.setCode(1002);
-				result.setMsg("数据表名称冲突，请修改名称");
-				return result;
-			}
-		}
-		
-		finalCSV.setFileName(rawCSV.getFileName());
-		finalCSV.setTitle(rawCSV.getTitle());
-		finalCSV.setData(rawCSV.getData());
-		finalCSVRepository.save(rawCSV);
-		rawCSVRepository.delete(id);
-		return new CommonResult().success("上传成功！");
-		
-	}*/
-	
 	
 	public CommonResult uploadFileCSV(MultipartFile file) throws IOException {
 		if(!isCsv(file.getOriginalFilename())) {
@@ -213,8 +181,8 @@ public class FileCSVServiceImpl implements FileCSVService {
 	public CommonResult getCSVList(Map<String,Object> map) {
 		int size = map.size();
 		int page = 1;
-		int limit = 20;
-		String title = "";
+		int limit = 10;
+		String project = "";
 		
 		if(size != 0) {
 			for(String key: map.keySet()) {
@@ -226,42 +194,71 @@ public class FileCSVServiceImpl implements FileCSVService {
 					limit = Integer.decode(map.get(key).toString());
 				}
 				
-				if(key.equalsIgnoreCase("title")) {
-					title = (String) map.get(key);
+				if(key.equalsIgnoreCase("project")) {
+					project = (String) map.get(key);
 				}
 			}
 		}
 
-		System.out.printf("page =%d, limit =%d, title= %s\n", page,limit,title);
+		System.out.printf("page =%d, limit =%d, project= %s\n", page,limit,project);
 		Sort sort = new Sort(Sort.Direction.DESC,"timestamp");
 		PageRequest pageRequest = new PageRequest(page-1, limit, sort);
-		List<FinalCSV> finalCSV = null;
+		Page<FinalCSV> finalCSV = null;
 		long sum = 0;
 		
-		System.out.println("run here!");
-	/*	if("".equals(title)) {
-			dashboard = finalCSVRepository.findAll(pageRequest);
+		if("".equals(project)) {
+			finalCSV = finalCSVRepository.findAll(pageRequest);
 			sum = finalCSVRepository.count();
 		}else {
-			dashboard = finalCSVRepository.findByTitle(title);
-			sum = finalCSVRepository.countByTitle(title);
+			finalCSV = finalCSVRepository.findByTitle(project, pageRequest);
+			sum = finalCSVRepository.countByTitle(project);
 		}
-
+		List<FinalCSV> obj = finalCSV.getContent();
 		Map<String,Object> result = new HashMap<>();
-		result.put("items", finalCSV);
+		result.put("items", obj);
 		result.put("total", sum);
-		return new CommonResult().success(result);*/
-		return null;
+		return new CommonResult().success(result);
+	}
+	
+	public CommonResult viewCSVByHash(String hash) {
+		if(hash == null || "".equals(hash) || hash.length()<=0 || hash.isEmpty()) {
+			return new CommonResult().customFailed("hash传参错误！");
+		}
+		
+		FinalCSV finalCSV = finalCSVRepository.findByHash(hash);
+		return new CommonResult().success(finalCSV);
+	}
+	
+	public CommonResult deleteCSVByHash(String hash) {
+		if(hash == null || "".equals(hash) || hash.length()<=0 || hash.isEmpty()) {
+			return new CommonResult().customFailed("hash传参错误！");
+		}
+		
+		finalCSVRepository.deleteByHash(hash);
+		return new CommonResult().success("删除成功！");
+		
+	}
+	
+	private static boolean isAllTrue(RawCSV rawCSV) {
+		ArrayList<Map<String,ArrayList<String>>> data = rawCSV.getData();
+		for(int i=0; i<data.size();i++) {
+			for(String s: data.get(i).keySet()) {
+				if(data.get(i).get(s).get(0).equals("false")){
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	public CommonResult saveCSVTitle(String hash, RawCSV rawCSV) {
-		System.out.println(rawCSV.getFileName());
-		System.out.println(rawCSV.getHash());
-		System.out.println(rawCSV.getTimestamp());
-		for(int i =0; i< rawCSV.getTitle().size();i++) {
-			System.out.println(rawCSV.getTitle().get(i).getTitle());
-			System.out.println(rawCSV.getTitle().get(i).getTitleType());
+		if(hash == null || "".equals(hash) || hash.length()<=0 || hash.isEmpty()) {
+			return new CommonResult().customFailed("hash传参错误！");
 		}
+	/*	boolean isExist = finalCSVRepository.existsByFileName(rawCSV.getFileName());
+		if(isExist) {
+			return new CommonResult().customFailed("该名称已存在");
+		}*/
 		
 		RawCSV repoCSV = rawCSVRepository.findByHash(hash);
 		repoCSV.setFileName(rawCSV.getFileName());
@@ -269,8 +266,6 @@ public class FileCSVServiceImpl implements FileCSVService {
 		
 		ArrayList<Map<String,ArrayList<String>>> data = repoCSV.getData();
 		ArrayList<Map<String,ArrayList<String>>> refeshData = new ArrayList<Map<String,ArrayList<String>>>();
-	//	Map<String,ArrayList<String>> dataCell = new HashMap<String,ArrayList<String>>();
-	//	ArrayList<String> dataCellData = new ArrayList<>();
 		
 		for(int i=0; i<data.size(); i++) {
 			Map<String,ArrayList<String>> dataCell = new HashMap<String,ArrayList<String>>();
@@ -278,8 +273,6 @@ public class FileCSVServiceImpl implements FileCSVService {
 				ArrayList<String> dataCellData = new ArrayList<>();
 				for(int j=0; j<repoCSV.getTitle().size(); j++) {
 					if(s.equals(repoCSV.getTitle().get(j).getTitle())) {
-						System.out.printf("%s,%s\n",s,repoCSV.getTitle().get(j).getTitle());
-					//	ArrayList<String> dataCellData = new ArrayList<>();
 						String titleType = repoCSV.getTitle().get(j).getTitleType();
 						boolean result = false;
 						switch(titleType) {
@@ -305,12 +298,147 @@ public class FileCSVServiceImpl implements FileCSVService {
 			refeshData.add(dataCell);
 		//	refeshData.add(i, dataCell);
 		}
-		
 		repoCSV.setData(refeshData);
+	//	RawCSV saveCSV = rawCSVRepository.save(repoCSV);
+		boolean flag = isAllTrue(repoCSV);
+		if(flag) {
+		//	boolean isExist = finalCSVRepository.existsByFileName(repoCSV.getFileName());
+			FinalCSV tmpCSV = finalCSVRepository.findByFileName(repoCSV.getFileName());
+			if(tmpCSV.getHash() == null || "".equals(tmpCSV.getHash()) || tmpCSV.getHash().length()<=0 | tmpCSV.getHash().isEmpty()) {
+				FinalCSV finalCSV = new FinalCSV();
+				finalCSV.setFileName(repoCSV.getFileName());
+				finalCSV.setHash(repoCSV.getHash());
+				finalCSV.setTitle(repoCSV.getTitle());
+				finalCSV.setTimestamp(repoCSV.getTimestamp());
+				finalCSV.setData(repoCSV.getData());
+				FinalCSV finalCSVRep = finalCSVRepository.save(finalCSV);
+				rawCSVRepository.deleteByHash(repoCSV.getHash());
+				return new CommonResult().success("保存成功！");
+			}
+			return new CommonResult().customFailed("该名称已存在");
+		}else {
+			rawCSVRepository.deleteByHash(repoCSV.getHash());
+			return new CommonResult().success(repoCSV);
+		}
+	}
+	
+	private static boolean isEqualTitle(ArrayList<TitleCell> A1, ArrayList<TitleCell> A2) {
+		if(A1.size() != A2.size()) {
+			return false;
+		}
+		List<String> list1 = new ArrayList<>();
+		List<String> list2 = new ArrayList<>();
 		
-		RawCSV saveCSV = rawCSVRepository.save(repoCSV);
+		for(int i=0;i<A1.size();i++) {
+			list1.add(A1.get(i).getTitle());
+			list2.add(A2.get(i).getTitle());
+		}
+		
+		Collections.sort(list1);
+		Collections.sort(list2);
+		return list1.equals(list2);
+	}
+	
+	public CommonResult updateCSVData(String hash, MultipartFile file) throws IOException {
+		if(!isCsv(file.getOriginalFilename())) {
+			return new CommonResult().customFailed("请选择CSV格式文件");
+		}
+		String fileName = file.getOriginalFilename();
+		String prefixName = fileName.substring(0, fileName.lastIndexOf("."));
+	//	String suffixName = fileName.substring(fileName.lastIndexOf("."));
+		
+		String newFileName = prefixName + "-" + System.currentTimeMillis()+ ".csv";
+		File path = new File(Utils.getRootPath()+Utils.getCsvPath());
+		if(!path.exists()) {
+			path.mkdirs();
+		}
+		File restore =  new File(Utils.getRootPath()+Utils.getCsvPath()+ newFileName);
+		if(!restore.exists()) {
+			restore.createNewFile();
+		} 
+		
+		file.transferTo(restore);
+		
+		RawCSV rawCSV = new RawCSV();
+		rawCSV.setFileName(fileName);
+		
+		DataInputStream in = new DataInputStream(new FileInputStream(restore));
+		CSVReader csvReader = new CSVReader(new InputStreamReader(in, "GB2312"));
+		
+		ArrayList<TitleCell> titleHeader = new ArrayList<TitleCell>();
+		String[] header = csvReader.readNext();
+		for(int i=0; i < header.length; i++) {
+			TitleCell title = new TitleCell();
+			title.setTitle(header[i]);
+			titleHeader.add(title);
+		}
+		rawCSV.setTitle(titleHeader);
 		
 		
-		return new CommonResult().success(saveCSV);
+		ArrayList<Map<String,ArrayList<String>>> dataList = new ArrayList< Map<String,ArrayList<String>>>();
+		String[] str; 
+		while((str = csvReader.readNext())!= null) {
+			Map<String,ArrayList<String>> map = new HashMap<>();
+			for(int i=0;i < str.length; i++) {
+				ArrayList<String> dataSet = new ArrayList<>();
+				dataSet.add("true");
+				dataSet.add(str[i]);
+				map.put(header[i], dataSet);
+			} 
+			dataList.add(map);
+		}
+		rawCSV.setData(dataList);
+		csvReader.close();
+	
+		RawCSV repoCSV = rawCSVRepository.save(rawCSV);
+		FinalCSV finalCSV = finalCSVRepository.findByHash(hash);
+		
+		if(!isEqualTitle(repoCSV.getTitle(),finalCSV.getTitle())) {
+			return new CommonResult().customFailed("表头不一致，无法更新数据");
+		}
+		
+		ArrayList<Map<String,ArrayList<String>>> data = repoCSV.getData();
+		ArrayList<Map<String,ArrayList<String>>> refeshData = new ArrayList<Map<String,ArrayList<String>>>();
+		for(int i=0; i<data.size(); i++) {
+			Map<String,ArrayList<String>> dataCell = new HashMap<String,ArrayList<String>>();
+			for(String s: data.get(i).keySet()) {
+				ArrayList<String> dataCellData = new ArrayList<>();
+				for(int j=0; j<repoCSV.getTitle().size(); j++) {
+					if(s.equals(repoCSV.getTitle().get(j).getTitle())) {
+						String titleType = repoCSV.getTitle().get(j).getTitleType();
+						boolean result = false;
+						switch(titleType) {
+						case "number":
+							result = isNumeric(data.get(i).get(s).get(1));
+							break;
+						case "position":
+							result = isChinaProvince(data.get(i).get(s).get(1));
+							break;
+						case "data":
+							result = isDateTime(data.get(i).get(s).get(1));
+							break;
+						case "text":
+							result = true;
+							break;
+						}
+						dataCellData.add(String.valueOf(result));
+						dataCellData.add(data.get(i).get(s).get(1));
+						dataCell.put(s,dataCellData );
+					}
+				}
+			}
+			refeshData.add(dataCell);
+		}
+		repoCSV.setData(refeshData);
+		if(isAllTrue(repoCSV)) {
+			finalCSV.setData(repoCSV.getData());
+			finalCSV.setTimestamp(repoCSV.getTimestamp());
+			FinalCSV finalCSVRep = finalCSVRepository.save(finalCSV);
+			rawCSVRepository.deleteByHash(repoCSV.getHash());
+			return new CommonResult().success("保存成功！");
+		}else {
+			rawCSVRepository.deleteByHash(repoCSV.getHash());
+			return new CommonResult().success(repoCSV);
+		}	
 	}
 }
