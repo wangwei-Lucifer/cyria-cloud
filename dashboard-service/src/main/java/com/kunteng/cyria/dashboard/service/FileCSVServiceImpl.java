@@ -255,10 +255,6 @@ public class FileCSVServiceImpl implements FileCSVService {
 		if(hash == null || "".equals(hash) || hash.length()<=0 || hash.isEmpty()) {
 			return new CommonResult().customFailed("hash传参错误！");
 		}
-	/*	boolean isExist = finalCSVRepository.existsByFileName(rawCSV.getFileName());
-		if(isExist) {
-			return new CommonResult().customFailed("该名称已存在");
-		}*/
 		
 		RawCSV repoCSV = rawCSVRepository.findByHash(hash);
 		repoCSV.setFileName(rawCSV.getFileName());
@@ -302,9 +298,8 @@ public class FileCSVServiceImpl implements FileCSVService {
 	//	RawCSV saveCSV = rawCSVRepository.save(repoCSV);
 		boolean flag = isAllTrue(repoCSV);
 		if(flag) {
-		//	boolean isExist = finalCSVRepository.existsByFileName(repoCSV.getFileName());
 			FinalCSV tmpCSV = finalCSVRepository.findByFileName(repoCSV.getFileName());
-			if(tmpCSV.getHash() == null || "".equals(tmpCSV.getHash()) || tmpCSV.getHash().length()<=0 | tmpCSV.getHash().isEmpty()) {
+			if(tmpCSV == null || tmpCSV.getHash() == null || "".equals(tmpCSV.getHash()) || tmpCSV.getHash().length()<=0 || tmpCSV.getHash().isEmpty()){
 				FinalCSV finalCSV = new FinalCSV();
 				finalCSV.setFileName(repoCSV.getFileName());
 				finalCSV.setHash(repoCSV.getHash());
@@ -314,11 +309,16 @@ public class FileCSVServiceImpl implements FileCSVService {
 				FinalCSV finalCSVRep = finalCSVRepository.save(finalCSV);
 				rawCSVRepository.deleteByHash(repoCSV.getHash());
 				return new CommonResult().success("保存成功！");
+			}else {
+				return new CommonResult().customFailed(1000, "该表格名称已存在");
 			}
-			return new CommonResult().customFailed("该名称已存在");
 		}else {
 			rawCSVRepository.deleteByHash(repoCSV.getHash());
-			return new CommonResult().success(repoCSV);
+			CommonResult result = new CommonResult();
+			result.setCode(0);
+			result.setStatusCode(1001);
+			result.setData(repoCSV);
+			return result;
 		}
 	}
 	

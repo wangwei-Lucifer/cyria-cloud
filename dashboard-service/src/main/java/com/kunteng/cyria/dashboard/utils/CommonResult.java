@@ -20,6 +20,7 @@ public class CommonResult {
     //未授权
     public static final int  FORBIDDEN = 403;
     private int code;
+    private int statusCode;
     private String msg;
     private Object data;
     private String id;
@@ -63,6 +64,13 @@ public class CommonResult {
     
     public CommonResult customFailed(String msg) {
     	this.code = 1;
+    	this.msg = msg;
+    	return this;
+    }
+    
+    public CommonResult customFailed(int StatusCode, String msg) {
+    	this.code = SUCCESS;
+    	this.statusCode = StatusCode;
     	this.msg = msg;
     	return this;
     }
@@ -114,6 +122,14 @@ public class CommonResult {
     @Override
     public String toString() {
         return JsonUtil.objectToJson(this);
+    }
+    
+    public int getStatusCode() {
+    	return this.statusCode;
+    }
+    
+    public void setStatusCode(int statusCode) {
+    	this.statusCode = statusCode;
     }
 
     public int getCode() {
