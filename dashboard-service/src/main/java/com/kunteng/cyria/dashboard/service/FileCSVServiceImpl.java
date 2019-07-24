@@ -480,4 +480,18 @@ public class FileCSVServiceImpl implements FileCSVService {
 			return new CommonResult().success(repoCSV);
 		}	
 	}
+	
+	public CommonResult getTitleList() {
+		Sort sort = new Sort(Sort.Direction.DESC,"timestamp");
+		List<FinalCSV> list = finalCSVRepository.findAll(sort);
+		List<Map<String,Object>> result = new ArrayList<>();
+		for(int i=0;i<list.size();i++) {
+			Map<String,Object> map = new HashMap<>();
+			map.put("name", list.get(i).getFileName());
+			map.put("hash", list.get(i).getHash());
+			map.put("title", list.get(i).getTitle());
+			result.add(map);
+		}
+		return new CommonResult().success(result);
+	}
 }

@@ -63,6 +63,11 @@ public class FileCSVController {
 	public CommonResult updateCSVData(@PathVariable String hash, MultipartFile file) throws IOException{
 		return fileCSVService.updateCSVData(hash, file);
 	}
+	
+	@RequestMapping(path = "/material/titleList", method = RequestMethod.GET)
+	public CommonResult getTitleList() {
+		return fileCSVService.getTitleList();
+	}
 
 	@RequestMapping(value = "/material/jsonapi", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public String jsonapi(@RequestParam(defaultValue = "") String groups, @RequestParam(defaultValue = "") String values,
@@ -75,7 +80,7 @@ public class FileCSVController {
 		log.info("RequestParam suuid:" + suuid);
 		log.info("RequestParam source:" + source);
 
-                		String srcgroups = "";
+        String srcgroups = "";
 		String srcvalues = "";
 		try {
 			BASE64Decoder Base64 = new BASE64Decoder();

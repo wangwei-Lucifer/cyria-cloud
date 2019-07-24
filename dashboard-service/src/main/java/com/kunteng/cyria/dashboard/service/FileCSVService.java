@@ -21,4 +21,6 @@ public interface FileCSVService {
 	CommonResult saveCSVTitle(String hash, RawCSV rawCSV);
 	
 	CommonResult updateCSVData(String hash, MultipartFile file) throws IOException;
+
+	CommonResult getTitleList();
 }

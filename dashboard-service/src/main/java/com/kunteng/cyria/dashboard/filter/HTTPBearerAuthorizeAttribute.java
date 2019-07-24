@@ -66,6 +66,11 @@ public class HTTPBearerAuthorizeAttribute implements  Filter {
 			chain.doFilter(request, response);
 			return;
 		}
+		if(path.equalsIgnoreCase("/material/titleList")) {
+			//	chain.doFilter(wrapper, response);
+				chain.doFilter(request, response);
+				return;
+			}
 		String method = httpRequest.getMethod();
 		if("OPTIONS".equalsIgnoreCase(method)) {
 			httpResponse.setStatus(HttpServletResponse.SC_ACCEPTED);
