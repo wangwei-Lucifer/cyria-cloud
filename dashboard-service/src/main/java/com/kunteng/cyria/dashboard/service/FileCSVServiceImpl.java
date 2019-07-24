@@ -495,4 +495,9 @@ public class FileCSVServiceImpl implements FileCSVService {
 		}
 		return new CommonResult().success(result);
 	}
+	
+	public CommonResult cancelCSV(String hash) {
+		rawCSVRepository.deleteByHash(hash);
+		return new CommonResult().success("取消成功");
+	}
 }

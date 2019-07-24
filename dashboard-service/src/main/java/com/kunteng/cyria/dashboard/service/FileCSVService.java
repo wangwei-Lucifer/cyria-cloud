@@ -23,4 +23,6 @@ public interface FileCSVService {
 	CommonResult updateCSVData(String hash, MultipartFile file) throws IOException;
 
 	CommonResult getTitleList();
+	
+	CommonResult cancelCSV(String hash);
 }
