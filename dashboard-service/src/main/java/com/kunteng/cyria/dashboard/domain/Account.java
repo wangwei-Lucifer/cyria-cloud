@@ -64,7 +64,17 @@ public class Account {
 	public String getId() {
 		return this.id;
 	}
-	
+	public void init(){
+                if(username.equals("admin")){
+		this.projects = new HashMap<String,String>();
+		this.roles  = new ArrayList<String>() {{add("user");add("admin");}};
+		this.avatar = "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif";
+                }else{
+		this.projects = new HashMap<String,String>();
+		this.roles  = new ArrayList<String>() {{add("user");}};
+		this.avatar = "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif";
+                }
+        }
 	public String getUsername() {
 		return username;
 	}

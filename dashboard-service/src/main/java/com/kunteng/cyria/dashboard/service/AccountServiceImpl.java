@@ -52,6 +52,7 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	public CommonResult createNewAccount(Account account) {
+                account.init();
 		Account exist = accountRepository.findAccountByUsername(account.getUsername());
 		if(exist != null) {
 			return new CommonResult().customFailed("用户已存在");
