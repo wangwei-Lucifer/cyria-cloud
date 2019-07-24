@@ -126,8 +126,8 @@ public class FileCSVController {
 					JSONArray ja = new JSONArray();
 					for (int i = 0; i < len; i++) {
 						JSONObject jo = new JSONObject();
-						jo.put("vendor", strs1.get(i));
-						jo.put("sales", strs2.get(i));
+						jo.put("x", strs1.get(i));
+						jo.put("y", strs2.get(i));
 						ja.add(jo);
 					}
 					data.put("statistics", ja);
@@ -138,8 +138,8 @@ public class FileCSVController {
 					JSONArray ja = new JSONArray();
 					for (int i = 0; i < len; i++) {
 						JSONObject jo = new JSONObject();
-						jo.put("vendor", strs1.get(i));
-						jo.put("sales", strs2.get(i));
+						jo.put("x", strs1.get(i));
+						jo.put("y", strs2.get(i));
 						ja.add(jo);
 					}
 					data.put("statistics", ja);
@@ -150,8 +150,8 @@ public class FileCSVController {
 					JSONArray ja = new JSONArray();
 					for (int i = 0; i < len; i++) {
 						JSONObject jo = new JSONObject();
-						jo.put("vendor", strs1.get(i));
-						jo.put("sales", strs2.get(i));
+						jo.put("x", strs1.get(i));
+						jo.put("y", strs2.get(i));
 						ja.add(jo);
 					}
 					data.put("statistics", ja);
@@ -162,8 +162,8 @@ public class FileCSVController {
 					JSONArray ja = new JSONArray();
 					for (int i = 0; i < len; i++) {
 						JSONObject jo = new JSONObject();
-						jo.put("name", strs1.get(i));
-						jo.put("value", strs2.get(i));
+						jo.put("x", strs1.get(i));
+						jo.put("y", strs2.get(i));
 						ja.add(jo);
 					}
 					data.put("statistics", ja);
