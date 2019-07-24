@@ -49,7 +49,7 @@ public class FileCSVController {
 	}
 	
 	@RequestMapping(path = "/material/{hash}/update", method = RequestMethod.POST)
-	public CommonResult updateCSVData(String hash, MultipartFile file) throws IOException{
+	public CommonResult updateCSVData(@PathVariable String hash, MultipartFile file) throws IOException{
 		return fileCSVService.updateCSVData(hash, file);
 	}
 }
