@@ -219,26 +219,32 @@ public class FileCSVServiceImpl implements FileCSVService {
 		System.out.printf("page =%d, limit =%d, fileName= %s\n", page,limit,fileName);
 		Sort sort = new Sort(Sort.Direction.DESC,"timestamp");
 		PageRequest pageRequest = new PageRequest(page-1, limit, sort);
-		Page<FinalCSV> finalCSV = finalCSVRepository.findAll(pageRequest);
+	//	Page<FinalCSV> finalCSV = finalCSVRepository.findAll(pageRequest);
 		long sum = 0;
 	
 		List<FinalCSV> filterCSV = new ArrayList<>();
 		if("".equals(fileName)) {
+			Page<FinalCSV> finalCSV = finalCSVRepository.findAll(pageRequest);
 			sum = finalCSVRepository.count();
-			for(int i=0;i<sum;i++) {
+			for(int i=0;i<finalCSV.getContent().size();i++) {
 				filterCSV.add(finalCSV.getContent().get(i));
 			}
 		}else {
-			if(isContailFileName(fileName,finalCSV.getContent())) {
+			List<FinalCSV> total = finalCSVRepository.findAll(sort);
+			if(isContailFileName(fileName,total)) {
 				FinalCSV tmp = finalCSVRepository.findByFileName(fileName);
 				sum =1;
 				filterCSV.add(tmp);
 			}else {
-				for(int i=0; i<finalCSV.getContent().size();i++) {
-					if(isContainTitle(fileName,finalCSV.getContent().get(i).getTitle())) {
+				List<FinalCSV> save = new ArrayList<>();
+				for(int i=0;i < total.size();i++) {
+					if(isContainTitle(fileName, total.get(i).getTitle())) {
+						save.add(total.get(i));
 						sum++;
-						filterCSV.add(finalCSV.getContent().get(i));
 					}
+				}
+				for(int i=0; i<limit && i<sum;i++) {
+					filterCSV.add(save.get((page-1)*limit+i));
 				}
 			}
 		}
