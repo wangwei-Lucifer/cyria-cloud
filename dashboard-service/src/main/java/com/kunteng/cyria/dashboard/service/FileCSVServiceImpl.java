@@ -174,7 +174,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 		} 
 		
 		file.transferTo(restore);
-		CommonResult result = readCSV(fileName,restore);
+		CommonResult result = readCSV(prefixName,restore);
 		return result;	
 	}
 	
@@ -398,7 +398,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 		file.transferTo(restore);
 		
 		RawCSV rawCSV = new RawCSV();
-		rawCSV.setFileName(fileName);
+		rawCSV.setFileName(prefixName);
 		
 		DataInputStream in = new DataInputStream(new FileInputStream(restore));
 		CSVReader csvReader = new CSVReader(new InputStreamReader(in, "GB2312"));
@@ -432,6 +432,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 		FinalCSV finalCSV = finalCSVRepository.findByHash(hash);
 		
 		if(!isEqualTitle(repoCSV.getTitle(),finalCSV.getTitle())) {
+			rawCSVRepository.deleteByHash(repoCSV.getHash());
 			return new CommonResult().customFailed("表头不一致，无法更新数据");
 		}
 		

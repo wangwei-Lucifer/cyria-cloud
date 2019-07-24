@@ -5,10 +5,13 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "finalCSV")
 public class FinalCSV {
+	@Id
+	private String id;
 	private String hash;
 	private String fileName;
 	private  ArrayList<TitleCell> title;
