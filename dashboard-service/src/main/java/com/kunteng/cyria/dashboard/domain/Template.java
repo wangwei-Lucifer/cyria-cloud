@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.util.UUID;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
 @Document(collection = "templates")
 @JsonIgnoreProperties(ignoreUnknown = true)

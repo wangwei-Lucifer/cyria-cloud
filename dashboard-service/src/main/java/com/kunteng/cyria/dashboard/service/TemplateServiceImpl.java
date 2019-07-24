@@ -33,6 +33,7 @@ public class TemplateServiceImpl implements TemplateService {
 			Template template = new Template();
 			template.getConfig().setTitle(translation.getName());
 			template.getConfig().setAbout(translation.getAbout());
+			template.getConfig().setColors(translation.getColors());
 			template.setTimestamp(new Date().getTime());
 			templateRepository.save(template);
 			String hash = template.getHash();

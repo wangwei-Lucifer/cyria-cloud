@@ -152,6 +152,7 @@ public class DashboardServiceImpl implements DashboardService {
 						dashboard.getConfig().setZoom(db.getConfig().getZoom());
 						dashboard.getConfig().setBackgroundColor(db.getConfig().getBackgroundColor());
 						dashboard.getConfig().setBackPic(db.getConfig().getBackPic());
+						dashboard.getConfig().setColors(db.getConfig().getColors());
 						dashboard.setWidget(db.getWidget());
 						dashboard.getConfig().setPage(true);
 						dashboard.setProject(db.getProject());
@@ -164,6 +165,7 @@ public class DashboardServiceImpl implements DashboardService {
 						dashboard.getConfig().setZoom(template.getConfig().getZoom());
 						dashboard.getConfig().setBackgroundColor(template.getConfig().getBackgroundColor());
 						dashboard.getConfig().setBackPic(template.getConfig().getBackPic());
+						dashboard.getConfig().setColors(template.getConfig().getColors());
 						dashboard.setWidget(template.getWidget());
 						dashboard.getConfig().setPage(true);
 					}

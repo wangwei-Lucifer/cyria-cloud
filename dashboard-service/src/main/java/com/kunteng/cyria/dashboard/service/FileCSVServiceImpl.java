@@ -80,7 +80,8 @@ public class FileCSVServiceImpl implements FileCSVService {
 	}
 	
 	private static boolean isDateTime(String str) {
-		Pattern pattern = Pattern.compile("^[0-9]{4}[-/ ](((0[13578]|(10|12))[-/ ](0[1-9]|[1-2][0-9]|3[0-1]))|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)[-/ ](0[1-9]|[1-2][0-9]|30)))$");
+	//	Pattern pattern = Pattern.compile("^[0-9]{4}[-/ ](((0[13578]|(10|12))[-/ ](0[1-9]|[1-2][0-9]|3[0-1]))|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)[-/ ](0[1-9]|[1-2][0-9]|30)))$");
+		Pattern pattern = Pattern.compile("^\\d{4}(\\-|\\/|\\.)\\d{1,2}\\1\\d{1,2}$");
 		Matcher isDate = pattern.matcher(str);
 		if(!isDate.matches()) {
 			return false;
