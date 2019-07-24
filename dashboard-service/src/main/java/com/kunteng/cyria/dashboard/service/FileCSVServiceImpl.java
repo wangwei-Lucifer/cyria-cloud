@@ -174,15 +174,31 @@ public class FileCSVServiceImpl implements FileCSVService {
 		} 
 		
 		file.transferTo(restore);
-		CommonResult result = readCSV(fileName,restore);
+		CommonResult result = readCSV(prefixName,restore);
 		return result;	
+	}
+	
+	private static boolean isContainTitle(String title, ArrayList<TitleCell> titleList) {
+		List<String> list = new ArrayList<String>();
+		for(int i=0;i < titleList.size();i++) {
+			list.add(titleList.get(i).getTitle());
+		}
+		return list.contains(title);
+	}
+	
+	private static boolean isContailFileName(String fileName, List<FinalCSV> csvList) {
+		List<String> list = new ArrayList<String>();
+		for(int i=0;i<csvList.size();i++) {
+			list.add(csvList.get(i).getFileName());
+		}
+		return list.contains(fileName);
 	}
 
 	public CommonResult getCSVList(Map<String,Object> map) {
 		int size = map.size();
 		int page = 1;
 		int limit = 10;
-		String project = "";
+		String fileName = "";
 		
 		if(size != 0) {
 			for(String key: map.keySet()) {
@@ -194,28 +210,50 @@ public class FileCSVServiceImpl implements FileCSVService {
 					limit = Integer.decode(map.get(key).toString());
 				}
 				
-				if(key.equalsIgnoreCase("project")) {
-					project = (String) map.get(key);
+				if(key.equalsIgnoreCase("fileName")) {
+					fileName = (String) map.get(key);
 				}
 			}
 		}
 
-		System.out.printf("page =%d, limit =%d, project= %s\n", page,limit,project);
+		System.out.printf("page =%d, limit =%d, fileName= %s\n", page,limit,fileName);
 		Sort sort = new Sort(Sort.Direction.DESC,"timestamp");
 		PageRequest pageRequest = new PageRequest(page-1, limit, sort);
-		Page<FinalCSV> finalCSV = null;
+	//	Page<FinalCSV> finalCSV = finalCSVRepository.findAll(pageRequest);
 		long sum = 0;
-		
-		if("".equals(project)) {
-			finalCSV = finalCSVRepository.findAll(pageRequest);
+	
+		List<FinalCSV> filterCSV = new ArrayList<>();
+		if("".equals(fileName)) {
+			Page<FinalCSV> finalCSV = finalCSVRepository.findAll(pageRequest);
 			sum = finalCSVRepository.count();
+			for(int i=0;i<finalCSV.getContent().size();i++) {
+				filterCSV.add(finalCSV.getContent().get(i));
+			}
 		}else {
-			finalCSV = finalCSVRepository.findByTitle(project, pageRequest);
-			sum = finalCSVRepository.countByTitle(project);
+			List<FinalCSV> total = finalCSVRepository.findAll(sort);
+			if(isContailFileName(fileName,total)) {
+				FinalCSV tmp = finalCSVRepository.findByFileName(fileName);
+				sum =1;
+				filterCSV.add(tmp);
+			}else {
+				List<FinalCSV> save = new ArrayList<>();
+				for(int i=0;i < total.size();i++) {
+					if(isContainTitle(fileName, total.get(i).getTitle())) {
+						save.add(total.get(i));
+						sum++;
+					}
+				}
+				for(int i=0; i<limit && i<sum;i++) {
+					filterCSV.add(save.get((page-1)*limit+i));
+				}
+			}
 		}
-		List<FinalCSV> obj = finalCSV.getContent();
+		for(int i=0;i<filterCSV.size();i++) {
+			filterCSV.get(i).setData(null);
+		}
+		
 		Map<String,Object> result = new HashMap<>();
-		result.put("items", obj);
+		result.put("items", filterCSV);
 		result.put("total", sum);
 		return new CommonResult().success(result);
 	}
@@ -360,7 +398,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 		file.transferTo(restore);
 		
 		RawCSV rawCSV = new RawCSV();
-		rawCSV.setFileName(fileName);
+		rawCSV.setFileName(prefixName);
 		
 		DataInputStream in = new DataInputStream(new FileInputStream(restore));
 		CSVReader csvReader = new CSVReader(new InputStreamReader(in, "GB2312"));
@@ -394,6 +432,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 		FinalCSV finalCSV = finalCSVRepository.findByHash(hash);
 		
 		if(!isEqualTitle(repoCSV.getTitle(),finalCSV.getTitle())) {
+			rawCSVRepository.deleteByHash(repoCSV.getHash());
 			return new CommonResult().customFailed("表头不一致，无法更新数据");
 		}
 		
