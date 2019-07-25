@@ -80,8 +80,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 	}
 	
 	private static boolean isDateTime(String str) {
-	//	Pattern pattern = Pattern.compile("^[0-9]{4}[-/ ](((0[13578]|(10|12))[-/ ](0[1-9]|[1-2][0-9]|3[0-1]))|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)[-/ ](0[1-9]|[1-2][0-9]|30)))$");
-		Pattern pattern = Pattern.compile("^\\d{4}(\\-|\\/|\\.)\\d{1,2}\\1\\d{1,2}$");
+		Pattern pattern = Pattern.compile("(^[0-9]{4}[-/][0-9]{1,2}[-/][0-9]{1,2}$)|(^[0-9]{4}[-/][0-9]{1,2}$)");
 		Matcher isDate = pattern.matcher(str);
 		if(!isDate.matches()) {
 			return false;
@@ -295,7 +294,14 @@ public class FileCSVServiceImpl implements FileCSVService {
 			return new CommonResult().customFailed("hash传参错误！");
 		}
 		
+		if(rawCSV == null) {
+			return new CommonResult().customFailed("传参错误！");
+		}
+		
 		RawCSV repoCSV = rawCSVRepository.findByHash(hash);
+		if(repoCSV == null) {
+			return new CommonResult().customFailed("数据库查询错误！");
+		}
 		repoCSV.setFileName(rawCSV.getFileName());
 		repoCSV.setTitle(rawCSV.getTitle());
 		
@@ -317,7 +323,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 						case "position":
 							result = isChinaProvince(data.get(i).get(s).get(1));
 							break;
-						case "data":
+						case "date":
 							result = isDateTime(data.get(i).get(s).get(1));
 							break;
 						case "text":
@@ -431,6 +437,9 @@ public class FileCSVServiceImpl implements FileCSVService {
 	
 		RawCSV repoCSV = rawCSVRepository.save(rawCSV);
 		FinalCSV finalCSV = finalCSVRepository.findByHash(hash);
+		if(finalCSV == null) {
+			return new CommonResult().customFailed("数据库查询失败！");
+		}
 		
 		if(!isEqualTitle(repoCSV.getTitle(),finalCSV.getTitle())) {
 			rawCSVRepository.deleteByHash(repoCSV.getHash());
