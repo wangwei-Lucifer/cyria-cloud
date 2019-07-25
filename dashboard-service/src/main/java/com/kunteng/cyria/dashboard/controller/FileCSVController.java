@@ -68,6 +68,11 @@ public class FileCSVController {
 	public CommonResult getTitleList() {
 		return fileCSVService.getTitleList();
 	}
+	
+	@RequestMapping(path = "/material/{hash}/cancel", method = RequestMethod.GET)
+	public CommonResult cancelCSV(@PathVariable String hash) {
+		return fileCSVService.cancelCSV(hash);
+	}
 
 	@RequestMapping(value = "/material/jsonapi", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public String jsonapi(@RequestParam(defaultValue = "") String groups, @RequestParam(defaultValue = "") String values,

@@ -12,8 +12,6 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Date;
 
-
-
 @Document(collection = "dashboards")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Dashboard {
@@ -43,6 +41,7 @@ public class Dashboard {
 	private long timestamp;
 	
 	private String project;
+	
 
 	public Dashboard() {
 		hash = Publish.generateId();

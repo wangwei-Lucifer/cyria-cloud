@@ -4,6 +4,9 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.Id;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -28,6 +31,8 @@ public class Translation {
 	
 	private String project;
 	
+	private Map<String,Object> colors;
+	
 	public Translation() {
 		name = "";
 		about = "";
@@ -37,6 +42,7 @@ public class Translation {
 		user = "";
 		project = "ungrouped";
 		template = "";
+		colors = new HashMap<String,Object>() {{put("name","配色1");put("value","['#8378ea', '#96bfff', '#37a2da', '#32c5e9', '#67e0e3', '#9fe6b8', '#ffdb5c', '#ff9f7f', '#fb7293', '#e062ae', '#e690d1', '#e7bcf3', '#9d96f4']");}};
 	}
 
 	public String getName(){
@@ -110,6 +116,14 @@ public class Translation {
 
 	public void setProject(String project) {
 		this.project = project;
+	}
+
+	public Map<String,Object> getColors() {
+		return this.colors;
+	}
+
+	public void setColors(Map<String,Object> colors) {
+		this.colors = colors;
 	}
 
 }
