@@ -93,6 +93,11 @@ public class FileCSVController {
 		log.info("RequestParam srcgroups:" + srcgroups);
 		log.info("RequestParam srcvalues:" + srcvalues);
                 FinalCSV fv = finalCSVRepository.findByHash(source);
+                if(fv==null){
+                   JSONObject jsob = new JSONObject();
+                   jsob.put("statusCode", 1);
+                   return jsob.toString();
+                }
                 ArrayList<TitleCell> list=fv.getTitle();
                 for(TitleCell tv : list){
                   log.info("TV title:" + tv.getTitle());
@@ -116,6 +121,7 @@ public class FileCSVController {
 				log.info("RequestParam srcgroups:" + srcgroups);
 				log.info("RequestParam srcvalues:" + srcvalues);
 				JSONObject jsob = new JSONObject();
+                                jsob.put("statusCode", 0);
 				int len = strs1.size();
 				if (len >= 12) {
 					len = 12;
@@ -203,6 +209,7 @@ public class FileCSVController {
                   }else{//如果manyparam不为false的话则为折线堆叠图，雷达图，分布散点图其中一种以uuid进行区分
 				String arrs[]=srcvalues.split("-");
 				JSONObject jsob = new JSONObject();
+                                jsob.put("statusCode", 0);
 				int len = strs1.size();
 				if (len >= 12) {
 					len = 12;
@@ -296,6 +303,7 @@ public class FileCSVController {
 				len = 12;
 			}
 			JSONObject jsob = new JSONObject();
+                        jsob.put("statusCode", 0);
 			if (type.equals("uuid9")) {//表格M:0的情况
 				jsob.put("status", 0);
 				JSONObject data = new JSONObject();
