@@ -79,6 +79,7 @@ public class FileCSVController {
 			@RequestParam(defaultValue = "") String type, @RequestParam(defaultValue = "") String suuid,
 			@RequestParam(defaultValue = "") String source) {
                 boolean manyparam=false;
+		boolean manygroup=false;
 		log.info("RequestParam groups:" + groups);
 		log.info("RequestParam values:" + values);
 		log.info("RequestParam type :" + type);
@@ -118,8 +119,17 @@ public class FileCSVController {
 				manyparam=true;
 			}
 		}
-		log.info("RequestParam manyparam:" + manyparam);//多参数标记如果此标记不为""则进入1:M的处理流程
-                if (srcgroups.split("-").length == 1) {
+		if(srcgroups!=null) {
+			if (srcgroups.split("-").length != 1) {
+				manygroup=true;
+			}
+			if(type.equals("uuid9")) {
+				manygroup=true;
+			}
+		}
+		System.out.println("RequestParam manygroup:" + manygroup);
+		System.out.println("RequestParam manyparam:" + manyparam);
+                if (manygroup==false) {
                   ArrayList<String> strs1 = getCsvRaw(fv, srcgroups);
 			if (manyparam==false) {//如果manyparam为false的话则是 柱状图，折线区域图，堆叠柱状图，玫瑰图，省份分布图 中的一种以UUID进行区分
                   		ArrayList<String> strs2 = getCsvRaw(fv, srcvalues);
