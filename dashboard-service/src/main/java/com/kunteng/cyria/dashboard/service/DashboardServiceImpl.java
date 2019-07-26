@@ -131,6 +131,9 @@ public class DashboardServiceImpl implements DashboardService {
 
 	public CommonResult getDashboardById(String id) {
 		Dashboard dashboard =  dashboardRepository.findByHash(id);
+		if(dashboard == null) {
+			return new CommonResult().customFailed("查询数据库失败！");
+		}
 		return new CommonResult().success(dashboard);
 	}
 	
@@ -199,6 +202,9 @@ public class DashboardServiceImpl implements DashboardService {
 		System.out.println("opt="+opt);
 		CommonResult result = new CommonResult();
 		Dashboard dashboard = dashboardRepository.findByHash(id);
+		if(dashboard == null) {
+			return new CommonResult().customFailed("查询数据库失败！");
+		}
 
 		dashboard.getPublish().setStatus(opt);
 		dashboard.getPublish().setTimestamp(new Date().getTime());
@@ -243,6 +249,10 @@ public class DashboardServiceImpl implements DashboardService {
 	public CommonResult updateDashboardById(String id, String db) throws Exception{
 		JSONObject jso = JSONObject.fromObject(db);
 		Dashboard dashboard = dashboardRepository.findByHash(id);
+		if(dashboard == null) {
+			return new CommonResult().customFailed("查询数据库失败！");
+		}
+		
 		if(jso.has("config")) {
 			JSONObject configObject = jso.getJSONObject("config");
 			Config config = (Config)JSONObject.toBean(configObject, Config.class);
@@ -266,6 +276,9 @@ public class DashboardServiceImpl implements DashboardService {
 	
 	public CommonResult getPublishedById(String id) {
 		Published published = publishedRepository.findByHash(id);
+		if(published == null) {
+			return new CommonResult().customFailed("查询数据库失败！");
+		}
 		return new CommonResult().success(published);
 	}
 
@@ -343,6 +356,10 @@ public class DashboardServiceImpl implements DashboardService {
 	
 	public CommonResult downloadDashboardById(String id) throws IOException {
 		Published published = publishedRepository.findByHash(id);
+		if(published == null) {
+			return new CommonResult().customFailed("查询数据库失败！");
+		}
+		
 		if(!published.getHash().equals("")) {
 			String path = Utils.getRootPath() + "/public/files/";
 			String fileName = id + ".json";
@@ -375,6 +392,10 @@ public class DashboardServiceImpl implements DashboardService {
 	public CommonResult moveDashboardById(String key, String id) {
 		System.out.println("key :"+key);
 		Dashboard dashboard = dashboardRepository.findByHash(id);
+		if(dashboard == null) {
+			return new CommonResult().customFailed("查询数据库失败！");
+		}
+		
 		if(!dashboard.getHash().equals("")) {
 			dashboard.setProject(key);
 			dashboardRepository.save(dashboard);
