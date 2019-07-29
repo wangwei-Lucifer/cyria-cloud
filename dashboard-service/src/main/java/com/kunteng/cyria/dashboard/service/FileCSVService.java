@@ -25,4 +25,6 @@ public interface FileCSVService {
 	CommonResult getTitleList();
 	
 	CommonResult cancelCSV(String hash);
+
+        String getJsonApiData(String groups,String values,String type,String suuid,String source);
 }
