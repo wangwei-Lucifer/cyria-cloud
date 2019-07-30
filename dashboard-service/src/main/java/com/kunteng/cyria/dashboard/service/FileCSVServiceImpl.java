@@ -455,6 +455,9 @@ public class FileCSVServiceImpl implements FileCSVService {
 		for(int i=0; i<data.size(); i++) {
 			Map<String,ArrayList<String>> dataCell = new HashMap<String,ArrayList<String>>();
 			for(String s: data.get(i).keySet()) {
+				ArrayList<String> dataCellData = checkCellType(s,repoCSV,data.get(i).get(s).get(1));
+                                if(dataCellData.size()!=0){dataCell.put(s,dataCellData);}
+                                /* 将以下逻辑转化为checkCellType方法避免3层forloop
 				ArrayList<String> dataCellData = new ArrayList<>();
 				for(int j=0; j<repoCSV.getTitle().size(); j++) {
 					if(s.equals(repoCSV.getTitle().get(j).getTitle())) {
@@ -478,7 +481,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 						dataCellData.add(data.get(i).get(s).get(1));
 						dataCell.put(s,dataCellData );
 					}
-				}
+				}*/
 			}
 			refeshData.add(dataCell);
 		}
@@ -494,7 +497,33 @@ public class FileCSVServiceImpl implements FileCSVService {
 			return new CommonResult().success(repoCSV);
 		}	
 	}
-	
+	public ArrayList<String> checkCellType(String title,RawCSV repoCSV,String val){
+	       ArrayList<String> dataCellData = new ArrayList<>();
+				for(int j=0; j<repoCSV.getTitle().size(); j++) {
+					if(title.equals(repoCSV.getTitle().get(j).getTitle())) {
+						String titleType = repoCSV.getTitle().get(j).getTitleType();
+						boolean result = false;
+						switch(titleType) {
+						case "number":
+							result = isNumeric(val);
+							break;
+						case "position":
+							result = isChinaProvince(val);
+							break;
+						case "data":
+							result = isDateTime(val);
+							break;
+						case "text":
+							result = true;
+							break;
+						}
+						dataCellData.add(String.valueOf(result));
+						dataCellData.add(val);
+						//dataCell.put(s,dataCellData );
+					}
+				}
+               return dataCellData;
+        }
 	public CommonResult getTitleList() {
 		Sort sort = new Sort(Sort.Direction.DESC,"timestamp");
 		List<FinalCSV> list = finalCSVRepository.findAll(sort);
