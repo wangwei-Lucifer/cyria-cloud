@@ -34,6 +34,7 @@ import com.kunteng.cyria.dashboard.repository.FinalCSVRepository;
 import com.kunteng.cyria.dashboard.repository.RawCSVRepository;
 import com.kunteng.cyria.dashboard.utils.CommonResult;
 import com.kunteng.cyria.dashboard.utils.Utils;
+import com.kunteng.cyria.dashboard.utils.CityPos;
 import com.opencsv.CSVParser;
 import com.opencsv.CSVReader;
 import sun.misc.BASE64Decoder;
@@ -104,7 +105,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 			return false;
 		}
 	}
-	
+
 	public  boolean isCsv(String fileName) {
 		if(fileName.endsWith(".csv")) {
 			return true;
@@ -554,18 +555,7 @@ public class FileCSVServiceImpl implements FileCSVService {
                 return strs;
         }
 	public String[] getCityPos(String s) {
-		String [] posdata= {
-				"北京","101.78","36.62",
-				"天津","127.5","50.25",
-				"上海","121.15","31.89",
-				"重庆","109.78","39.6",
-				"重庆","120","37",
-				"河北","122","29",
-				"河南","123","47",
-				"云南","120","33",
-				"辽宁","118","42",
-				"黑龙江","120","36",
-		};
+		String [] posdata= CityPos.posdata;
 		String[] ss=new String[2];
 		ss[0]="0.0";
 		ss[1]="0.0";
