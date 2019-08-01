@@ -11,7 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import sun.misc.BASE64Decoder;
+import java.util.Base64;
+import java.util.Base64.Decoder;
 
 public class Utils {
 	private static final String rootPath ="/app/static";
@@ -82,8 +83,8 @@ public class Utils {
 			return null;
 		}
 		
-		BASE64Decoder decoder = new BASE64Decoder();
-		byte[] decoderBytes = decoder.decodeBuffer(srcPath.split(",")[1]);
+		Decoder decoder = Base64.getDecoder();
+		byte[] decoderBytes = decoder.decode(srcPath.split(",")[1]);
 		
 		String filePath = getDashboardPath();
 		String fileName = id + ".png";

@@ -1,21 +1,19 @@
 package com.kunteng.cyria.dashboard.domain;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.hibernate.validator.constraints.Length;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.core.GrantedAuthority;
-
-import javax.validation.constraints.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.time.LocalDate;
+
+import javax.validation.constraints.NotNull;
+
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
 
 @Document(collection = "accounts")
 @JsonIgnoreProperties(ignoreUnknown = true)
