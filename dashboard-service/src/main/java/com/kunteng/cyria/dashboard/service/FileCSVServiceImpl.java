@@ -34,12 +34,16 @@ import com.kunteng.cyria.dashboard.repository.FinalCSVRepository;
 import com.kunteng.cyria.dashboard.repository.RawCSVRepository;
 import com.kunteng.cyria.dashboard.utils.CommonResult;
 import com.kunteng.cyria.dashboard.utils.Utils;
+import com.kunteng.cyria.dashboard.utils.CityPos;
 import com.opencsv.CSVParser;
 import com.opencsv.CSVReader;
 import sun.misc.BASE64Decoder;
-
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import feign.Logger;
 
+@Slf4j
 @Service
 public class FileCSVServiceImpl implements FileCSVService {
 	
@@ -101,7 +105,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 			return false;
 		}
 	}
-	
+
 	public  boolean isCsv(String fileName) {
 		if(fileName.endsWith(".csv")) {
 			return true;
@@ -469,6 +473,9 @@ public class FileCSVServiceImpl implements FileCSVService {
 		for(int i=0; i<data.size(); i++) {
 			Map<String,ArrayList<String>> dataCell = new HashMap<String,ArrayList<String>>();
 			for(String s: data.get(i).keySet()) {
+				ArrayList<String> dataCellData = checkCellType(s,repoCSV,data.get(i).get(s).get(1));
+                                if(dataCellData.size()!=0){dataCell.put(s,dataCellData);}
+                                /* 将以下逻辑转化为checkCellType方法避免3层forloop
 				ArrayList<String> dataCellData = new ArrayList<>();
 				for(int j=0; j<repoCSV.getTitle().size(); j++) {
 					if(s.equals(repoCSV.getTitle().get(j).getTitle())) {
@@ -492,7 +499,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 						dataCellData.add(data.get(i).get(s).get(1));
 						dataCell.put(s,dataCellData );
 					}
-				}
+				}*/
 			}
 			refeshData.add(dataCell);
 		}
@@ -508,7 +515,33 @@ public class FileCSVServiceImpl implements FileCSVService {
 			return new CommonResult().success(repoCSV);
 		}	
 	}
-	
+	public ArrayList<String> checkCellType(String title,RawCSV repoCSV,String val){
+	       ArrayList<String> dataCellData = new ArrayList<>();
+				for(int j=0; j<repoCSV.getTitle().size(); j++) {
+					if(title.equals(repoCSV.getTitle().get(j).getTitle())) {
+						String titleType = repoCSV.getTitle().get(j).getTitleType();
+						boolean result = false;
+						switch(titleType) {
+						case "number":
+							result = isNumeric(val);
+							break;
+						case "position":
+							result = isChinaProvince(val);
+							break;
+						case "data":
+							result = isDateTime(val);
+							break;
+						case "text":
+							result = true;
+							break;
+						}
+						dataCellData.add(String.valueOf(result));
+						dataCellData.add(val);
+						//dataCell.put(s,dataCellData );
+					}
+				}
+               return dataCellData;
+        }
 	public CommonResult getTitleList() {
 		Sort sort = new Sort(Sort.Direction.DESC,"timestamp");
 		List<FinalCSV> list = finalCSVRepository.findAll(sort);
@@ -527,4 +560,278 @@ public class FileCSVServiceImpl implements FileCSVService {
 		rawCSVRepository.deleteByHash(hash);
 		return new CommonResult().success("取消成功");
 	}
+	public ArrayList<String> getCsvRaw(FinalCSV fv, String rowtabname) {
+		ArrayList<String> strs = new ArrayList<String>();
+                ArrayList<Map<String,ArrayList<String>>> data=fv.getData();
+                for(Map<String,ArrayList<String>> mp : data){
+                   ArrayList<String> slist=mp.get(rowtabname);
+                   String val=slist.get(1);
+                   System.out.println("Val:" + val);
+                   strs.add(val);
+                }
+                return strs;
+        }
+	public String[] getCityPos(String s) {
+		String [] posdata= CityPos.posdata;
+		String[] ss=new String[2];
+		ss[0]="0.0";
+		ss[1]="0.0";
+		for(int i=0;i<posdata.length/3;i++) {
+			if(posdata[i*3].equals(s)) {
+				ss[0]=posdata[i*3+1];
+				ss[1]=posdata[i*3+2];
+			}
+		}
+		return ss;
+	}
+	public String getJsonApiData(String groups,String values,String type,String suuid,String source){
+               boolean manyparam=false;
+		boolean manygroup=false;
+		log.info("RequestParam groups:" + groups);
+		log.info("RequestParam values:" + values);
+		log.info("RequestParam type :" + type);
+		log.info("RequestParam suuid:" + suuid);
+		log.info("RequestParam source:" + source);
+
+                String srcgroups = "";
+		String srcvalues = "";
+		try {
+			BASE64Decoder Base64 = new BASE64Decoder();
+			srcgroups = new String(Base64.decodeBuffer(groups), "utf8");
+			srcvalues = new String(Base64.decodeBuffer(values), "utf8");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		log.info("RequestParam srcgroups:" + srcgroups);
+		log.info("RequestParam srcvalues:" + srcvalues);
+                FinalCSV fv = finalCSVRepository.findByHash(source);
+                if(fv==null){
+                   JSONObject jsob = new JSONObject();
+                   jsob.put("statusCode", 1);
+                   return jsob.toString();
+                }
+                ArrayList<TitleCell> list=fv.getTitle();
+                for(TitleCell tv : list){
+                  log.info("TV title:" + tv.getTitle());
+                }
+		if(srcvalues!=null) {
+			if (srcvalues.split("-").length != 1) {
+				manyparam=true;
+			}
+			if(type.equals("uuid6")) {
+				manyparam=true;
+			}
+			if(type.equals("uuid7")) {
+				manyparam=true;
+			}
+		}
+		if(srcgroups!=null) {
+			if (srcgroups.split("-").length != 1) {
+				manygroup=true;
+			}
+			if(type.equals("uuid9")) {
+				manygroup=true;
+			}
+		}
+		System.out.println("RequestParam manygroup:" + manygroup);
+		System.out.println("RequestParam manyparam:" + manyparam);
+                if (manygroup==false) {
+                  ArrayList<String> strs1 = getCsvRaw(fv, srcgroups);
+			if (manyparam==false) {//如果manyparam为false的话则是 柱状图，折线区域图，堆叠柱状图，玫瑰图，省份分布图 中的一种以UUID进行区分
+                  		ArrayList<String> strs2 = getCsvRaw(fv, srcvalues);
+				log.info("RequestParam srcgroups:" + srcgroups);
+				log.info("RequestParam srcvalues:" + srcvalues);
+				JSONObject jsob = new JSONObject();
+                                jsob.put("statusCode", 0);
+				int len = strs1.size();
+				if (len >= 12) {
+					len = 12;
+				}
+				if (type.equals("uuid1")) {//柱状图1:1
+					jsob.put("code", 0);
+					JSONObject data = new JSONObject();
+					JSONArray ja = new JSONArray();
+					for (int i = 0; i < len; i++) {
+						JSONObject jo = new JSONObject();
+						jo.put("x", strs1.get(i));
+						jo.put("y", strs2.get(i));
+						ja.add(jo);
+					}
+					data.put("statistics", ja);
+					jsob.put("data", data);
+				}  if (type.equals("uuid2")) {//折线区域图1:1
+					jsob.put("code", 0);
+					JSONObject data = new JSONObject();
+					JSONArray ja = new JSONArray();
+					for (int i = 0; i < len; i++) {
+						JSONObject jo = new JSONObject();
+						jo.put("x", strs1.get(i));
+						jo.put("y", strs2.get(i));
+						ja.add(jo);
+					}
+					data.put("statistics", ja);
+					jsob.put("data", data);
+				}  if (type.equals("uuid3")) {//堆叠柱状图1:1
+					jsob.put("code", 0);
+					JSONObject data = new JSONObject();
+					JSONArray ja = new JSONArray();
+					for (int i = 0; i < len; i++) {
+						JSONObject jo = new JSONObject();
+						jo.put("x", strs1.get(i));
+						jo.put("y", strs2.get(i));
+						ja.add(jo);
+					}
+					data.put("statistics", ja);
+					jsob.put("data", data);
+				}  if (type.equals("uuid4")) {//玫瑰图1:1
+					jsob.put("code", 0);
+					JSONObject data = new JSONObject();
+					JSONArray ja = new JSONArray();
+					for (int i = 0; i < len; i++) {
+						JSONObject jo = new JSONObject();
+						jo.put("x", strs1.get(i));
+						jo.put("y", strs2.get(i));
+						ja.add(jo);
+					}
+					data.put("statistics", ja);
+					jsob.put("data", data);
+				}  if (type.equals("uuid5")) {//地图省份分布图1:1
+					jsob.put("code", 0);
+					JSONObject data = new JSONObject();
+					JSONArray ja = new JSONArray();
+					for (int i = 0; i < len; i++) {
+						JSONObject jo = new JSONObject();
+						jo.put("name", strs1.get(i));
+						jo.put("value", strs2.get(i));
+						ja.add(jo);
+					}
+					data.put("china", ja);
+					jsob.put("data", data);
+				}  if (type.equals("uuid8")) {//地图分布散点图1:1的情况
+					jsob.put("code", 0);
+					JSONObject data = new JSONObject();
+					JSONArray ja = new JSONArray();
+					for (int i = 0; i < len; i++) {
+						JSONObject jo = new JSONObject();
+						jo.put("name", strs1.get(i));
+						JSONArray joa= new JSONArray();
+						String value=strs2.get(i);
+						String pos[]=getCityPos(strs1.get(i));
+						joa.add(Double.parseDouble(pos[0]));
+						joa.add(Double.parseDouble(pos[1]));
+						joa.add(Double.parseDouble(value));
+						jo.put("value", joa);
+						ja.add(jo);
+					}
+					data.put("china", ja);
+					jsob.put("data", data);
+				}
+				return jsob.toString();
+                  }else{//如果manyparam不为false的话则为折线堆叠图，雷达图，分布散点图其中一种以uuid进行区分
+				String arrs[]=srcvalues.split("-");
+				JSONObject jsob = new JSONObject();
+                                jsob.put("statusCode", 0);
+				int len = strs1.size();
+				if (len >= 12) {
+					len = 12;
+				}
+				ArrayList<String>[] strsarr = new ArrayList[arrs.length];
+				for(int i=0;i<arrs.length;i++) {
+					strsarr[i]= getCsvRaw(fv, arrs[i]);
+				}
+				if (type.equals("uuid6")) {//折线对叠图1:M的情况
+					jsob.put("code", 0);
+					JSONObject data = new JSONObject();
+					JSONObject dataseries= new JSONObject();
+					JSONArray categories = new JSONArray();
+					for (int i = 0; i < len; i++) {
+						categories.add(strs1.get(i));
+					}
+					dataseries.put("categories", categories);
+					JSONArray statistics= new JSONArray();
+					for (int i = 0; i < arrs.length; i++) {
+						JSONObject jo = new JSONObject();
+						jo.put("name", arrs[i]);
+						JSONArray ja = new JSONArray();
+						for (String s : strsarr[i]) {
+							ja.add(Integer.parseInt(s));
+						}
+						jo.put("data",ja);
+						statistics.add(jo);
+					}
+					dataseries.put("statistics", statistics);
+					data.put("dataseries", dataseries);
+					jsob.put("data", data);
+				}
+				if (type.equals("uuid7")) {//雷达图1:M的情况
+					jsob.put("code", 0);
+					JSONObject data = new JSONObject();
+					JSONObject dataseries= new JSONObject();
+					JSONArray categories = new JSONArray();
+					for (int i = 0; i < len; i++) {
+						JSONObject jo = new JSONObject();
+						jo.put("name", strs1.get(i));
+						//jo.put("max",600);
+						categories.add(jo);
+					}
+					dataseries.put("categories", categories);
+					JSONArray statistics= new JSONArray();
+					for (int i = 0; i < arrs.length; i++) {
+						JSONObject jo = new JSONObject();
+						jo.put("name", arrs[i]);
+						JSONArray ja = new JSONArray();
+						for (String s : strsarr[i]) {
+							ja.add(Double.parseDouble(s));
+						}
+						jo.put("value",ja);
+						statistics.add(jo);
+					}
+					dataseries.put("statistics", statistics);
+					data.put("dataseries", dataseries);
+					jsob.put("data", data);
+				}
+				return jsob.toString();
+                  }
+                }else{// 如果srcgroups长度不为1的话则是图表控件按图表控件标准进行返回即可
+			String arrs[]=srcgroups.split("-");
+			ArrayList<String>[] strsarr = new ArrayList[arrs.length];
+			for(int i=0;i<arrs.length;i++) {
+				strsarr[i]= getCsvRaw(fv, arrs[i]);
+			}
+			int len = strsarr[0].size();
+			if (len >= 12) {
+				len = 12;
+			}
+			JSONObject jsob = new JSONObject();
+                        jsob.put("statusCode", 0);
+			if (type.equals("uuid9")) {//表格M:0的情况
+				jsob.put("status", 0);
+				JSONObject data = new JSONObject();
+				JSONArray columns= new JSONArray();
+				//生成columns数据
+				for(int i=0;i<arrs.length;i++) {
+					JSONObject jo = new JSONObject();
+					jo.put("name", arrs[i]);
+					jo.put("id","vl"+i);
+					columns.add(jo);
+				}
+				data.put("columns", columns);
+				//生成row数据
+				JSONArray rows = new JSONArray();
+				for (int i = 0; i < len; i++) {
+					JSONObject jo = new JSONObject();
+					//fill jo by forloop
+					for(int j=0;j<strsarr.length;j++) {
+						String vlx=strsarr[j].get(i);
+						jo.put("vl"+j, vlx);
+					}
+					rows.add(jo);
+				}
+				data.put("rows", rows);
+				jsob.put("data", data);
+			}
+			return jsob.toString();
+                }
+        }
 }
