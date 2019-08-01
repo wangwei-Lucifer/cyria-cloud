@@ -36,6 +36,7 @@ import com.kunteng.cyria.dashboard.utils.CommonResult;
 import com.kunteng.cyria.dashboard.utils.Utils;
 import com.opencsv.CSVParser;
 import com.opencsv.CSVReader;
+import sun.misc.BASE64Decoder;
 
 import feign.Logger;
 
@@ -151,12 +152,19 @@ public class FileCSVServiceImpl implements FileCSVService {
 		return new CommonResult().failed();
 	}
 	
-	
 	public CommonResult uploadFileCSV(MultipartFile file) throws IOException {
-		if(!isCsv(file.getOriginalFilename())) {
+		/*if(!isCsv(file.getOriginalFilename())) {
+			return new CommonResult().customFailed("请选择CSV格式文件");
+		}*/
+		String fileName1 = file.getOriginalFilename();
+		BASE64Decoder decoder = new BASE64Decoder();
+		byte[] bytes = decoder.decodeBuffer(fileName1);
+		String fileName = new String(bytes);
+
+		if(!isCsv(fileName)) {
 			return new CommonResult().customFailed("请选择CSV格式文件");
 		}
-		String fileName = file.getOriginalFilename();
+		
 		String prefixName = fileName.substring(0, fileName.lastIndexOf("."));
 		String suffixName = fileName.substring(fileName.lastIndexOf("."));
 		
@@ -385,10 +393,20 @@ public class FileCSVServiceImpl implements FileCSVService {
 	}
 	
 	public CommonResult updateCSVData(String hash, MultipartFile file) throws IOException {
-		if(!isCsv(file.getOriginalFilename())) {
+		/*if(!isCsv(file.getOriginalFilename())) {
+			return new CommonResult().customFailed("请选择CSV格式文件");
+		}*/
+
+		String fileName1 = file.getOriginalFilename();
+		BASE64Decoder decoder = new BASE64Decoder();
+		byte[] bytes = decoder.decodeBuffer(fileName1);
+		String fileName = new String(bytes);
+
+		if(!isCsv(fileName)) {
 			return new CommonResult().customFailed("请选择CSV格式文件");
 		}
-		String fileName = file.getOriginalFilename();
+		
+		System.out.println("fileName="+fileName);
 		String prefixName = fileName.substring(0, fileName.lastIndexOf("."));
 	//	String suffixName = fileName.substring(fileName.lastIndexOf("."));
 		
