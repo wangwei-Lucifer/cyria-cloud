@@ -1,16 +1,14 @@
 package com.kunteng.cyria.dashboard.service;
 
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Base64;
+import java.util.Base64.Decoder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +16,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,22 +23,19 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.kunteng.cyria.dashboard.domain.FinalCSV;
 import com.kunteng.cyria.dashboard.domain.RawCSV;
-import com.kunteng.cyria.dashboard.domain.Template;
 import com.kunteng.cyria.dashboard.domain.TitleCell;
 import com.kunteng.cyria.dashboard.repository.FinalCSVRepository;
 import com.kunteng.cyria.dashboard.repository.RawCSVRepository;
+import com.kunteng.cyria.dashboard.utils.CityPos;
 import com.kunteng.cyria.dashboard.utils.CommonResult;
 import com.kunteng.cyria.dashboard.utils.Utils;
-import com.kunteng.cyria.dashboard.utils.CityPos;
-import com.opencsv.CSVParser;
 import com.opencsv.CSVReader;
-import sun.misc.BASE64Decoder;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+
 import lombok.extern.slf4j.Slf4j;
-import feign.Logger;
 
 @Slf4j
 @Service
@@ -161,8 +155,8 @@ public class FileCSVServiceImpl implements FileCSVService {
 			return new CommonResult().customFailed("请选择CSV格式文件");
 		}*/
 		String fileName1 = file.getOriginalFilename();
-		BASE64Decoder decoder = new BASE64Decoder();
-		byte[] bytes = decoder.decodeBuffer(fileName1);
+		Decoder decoder = Base64.getDecoder();;
+		byte[] bytes = decoder.decode(fileName1);
 		String fileName = new String(bytes);
 
 		if(!isCsv(fileName)) {
@@ -402,8 +396,8 @@ public class FileCSVServiceImpl implements FileCSVService {
 		}*/
 
 		String fileName1 = file.getOriginalFilename();
-		BASE64Decoder decoder = new BASE64Decoder();
-		byte[] bytes = decoder.decodeBuffer(fileName1);
+		Decoder decoder = Base64.getDecoder();;
+		byte[] bytes = decoder.decode(fileName1);
 		String fileName = new String(bytes);
 
 		if(!isCsv(fileName)) {
@@ -596,9 +590,8 @@ public class FileCSVServiceImpl implements FileCSVService {
                 String srcgroups = "";
 		String srcvalues = "";
 		try {
-			BASE64Decoder Base64 = new BASE64Decoder();
-			srcgroups = new String(Base64.decodeBuffer(groups), "utf8");
-			srcvalues = new String(Base64.decodeBuffer(values), "utf8");
+			srcgroups = new String(Base64.getDecoder().decode(groups), "utf8");
+			srcvalues = new String(Base64.getDecoder().decode(values), "utf8");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

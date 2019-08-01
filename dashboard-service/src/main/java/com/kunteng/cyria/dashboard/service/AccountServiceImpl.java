@@ -1,36 +1,27 @@
 package com.kunteng.cyria.dashboard.service;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 import com.kunteng.cyria.dashboard.client.AuthServiceClient;
 import com.kunteng.cyria.dashboard.domain.Account;
 import com.kunteng.cyria.dashboard.domain.Dashboard;
-import com.kunteng.cyria.dashboard.domain.JWT;
 import com.kunteng.cyria.dashboard.domain.User;
-import com.kunteng.cyria.dashboard.domain.UserLoginDTO;
 import com.kunteng.cyria.dashboard.repository.AccountRepository;
 import com.kunteng.cyria.dashboard.repository.DashboardRepository;
 import com.kunteng.cyria.dashboard.utils.BPwdEncoderUtil;
 import com.kunteng.cyria.dashboard.utils.CommonResult;
 
 import net.sf.json.JSONObject;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
-import java.util.ArrayList;
-import java.time.LocalDate;
 
 @Service
 public class AccountServiceImpl implements AccountService {
