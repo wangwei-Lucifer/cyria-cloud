@@ -12,3 +12,6 @@
 	- mvn package -DskipTests
 	- docker-compose -f docker-compose-base.yml -f docker-compose.yml build
 	- docker-compose -f docker-compose-base.yml -f docker-compose.yml up
+
+## 注册第一用户
+curl -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"12345678"}' http://localhost:4000/user/register
