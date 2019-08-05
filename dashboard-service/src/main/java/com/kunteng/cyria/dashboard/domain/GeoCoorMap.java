@@ -1,10 +1,18 @@
 package com.kunteng.cyria.dashboard.domain;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Document( collection = "GeoCoorMapOfChina")
 public class GeoCoorMap {
@@ -15,6 +23,8 @@ public class GeoCoorMap {
 	private String county;
 	private String zipCode;
 	private GeoJsonPoint location;
+	@Transient
+	private String dbResult;
 	
 	private static String generateId() {
         UUID uuid = UUID.randomUUID();
@@ -26,6 +36,18 @@ public class GeoCoorMap {
 	}
 	public GeoCoorMap(String id) {
 		this.id = id;
+	}
+	
+	public void cloneBy(GeoCoorMap clone) {
+		if (clone == null)
+			return;
+		
+		this.id = clone.id;
+		this.province = clone.province;
+		this.city = clone.city;
+		this.county = clone.county;
+		this.zipCode = clone.zipCode;
+		this.location = clone.location;
 	}
 	
 	public String getId() {
@@ -63,5 +85,41 @@ public class GeoCoorMap {
 	}
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
+	}
+	public String getDbResult( ) {
+		return dbResult;
+	}
+	public void setDbResult(String msg) {
+		dbResult = msg;
+	}
+	
+	public Map<String,double[]> cityLocToJson( ) {
+		if (this.city==null || this.city.isEmpty())
+			return null;
+
+		try {
+			double[] c = { this.location.getX(),this.location.getY() };
+			Map<String,double[]> m = new HashMap<String,double[]>();
+			m.put(this.city, c);
+			return m;
+		}
+		catch(Exception e) {
+			Log.info(e.getMessage());
+		}
+		return null;
+	}
+	public Map<String,double[]> countyLocToJson()  {
+		if (this.county==null || this.county.isEmpty())
+			return null;
+		try {
+			double[] c = { this.location.getX(),this.location.getY() };
+			Map<String,double[]> m = new HashMap<String,double[]>();
+			m.put(this.county, c);
+			return m;
+		}
+		catch(Exception e) {
+			Log.info(e.getMessage());
+		}
+		return null;
 	}
 }

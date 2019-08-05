@@ -4,20 +4,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import com.esotericsoftware.minlog.Log;
 import com.kunteng.cyria.dashboard.domain.GeoCoorMap;
-import com.kunteng.cyria.dashboard.utils.CommonResult;
-import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
-import com.mongodb.WriteResult;
 
 @Repository
 public class CudGeoCoorMapRepositoryImpl implements CudGeoCoorMapRepository {
@@ -32,7 +29,7 @@ public class CudGeoCoorMapRepositoryImpl implements CudGeoCoorMapRepository {
 	}
 	
 	@Override
-	public String upsert(Query query, GeoCoorMap entity) {
+	public GeoCoorMap upsert(Query query, GeoCoorMap entity) {
 		
 		Assert.notNull(entity);
 
@@ -46,12 +43,9 @@ public class CudGeoCoorMapRepositoryImpl implements CudGeoCoorMapRepository {
 		dataset.set("zipCode", entity.getZipCode());
 		dataset.set("location", entity.getLocation());
 
-		WriteResult dbret = mongo.upsert(query, dataset, GeoCoorMap.class);
+		GeoCoorMap dbret = mongo.findAndModify(query, dataset, new FindAndModifyOptions().returnNew(true).upsert(true), GeoCoorMap.class);
 		
-		if (dbret.getUpsertedId() == null)
-			return null;
-		
-		return dbret.getUpsertedId().toString();
+		return dbret;
 	}
 
 	public List<GeoCoorMap> findAll() {
@@ -74,6 +68,7 @@ public class CudGeoCoorMapRepositoryImpl implements CudGeoCoorMapRepository {
 		Log.info(query.toString());
 		return this.mongo.find(query, GeoCoorMap.class);
 	}
+	
 	public Boolean delete(String id) {
 		try {
 			this.mongo.remove(new GeoCoorMap(id));

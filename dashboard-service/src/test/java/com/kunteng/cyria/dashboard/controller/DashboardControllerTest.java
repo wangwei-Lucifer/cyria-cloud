@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableList;
 import com.kunteng.cyria.dashboard.DashboardApplication;
 import com.kunteng.cyria.dashboard.domain.*;
 import com.kunteng.cyria.dashboard.service.DashboardService;
-import com.sun.security.auth.UserPrincipal;
+//import com.sun.security.auth.UserPrincipal;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -12,6 +12,6 @@ import com.mongodb.WriteResult;
 public interface CudGeoCoorMapRepository {
 	List<GeoCoorMap> findAll();
 	List<GeoCoorMap> findBy(Map<String, String> cnd);
-	String upsert(Query query, GeoCoorMap entity);
+	GeoCoorMap upsert(Query query, GeoCoorMap entity);
 	Boolean delete(String id);
 }

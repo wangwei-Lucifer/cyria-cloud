@@ -14,5 +14,6 @@ public interface GeoCoorMapService {
 	CommonResult csvSave(MultipartFile file);
 	CommonResult listAll();
 	CommonResult listBy(Map<String, String> paras);
+	List<GeoCoorMap> getBy(Map<String, String> paras);
 	CommonResult delete(String id);
 }
