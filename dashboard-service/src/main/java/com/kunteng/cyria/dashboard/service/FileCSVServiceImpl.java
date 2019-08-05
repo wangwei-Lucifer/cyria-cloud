@@ -690,6 +690,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 					data.put("statistics", ja);
 					jsob.put("data", data);
 				}  if (type.equals("uuid5")) {//地图省份分布图1:1
+					len = strs1.size();
 					jsob.put("code", 0);
 					JSONObject data = new JSONObject();
 					JSONArray ja = new JSONArray();
@@ -702,6 +703,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 					data.put("china", ja);
 					jsob.put("data", data);
 				}  if (type.equals("uuid8")) {//地图分布散点图1:1的情况
+					len = strs1.size();
 					jsob.put("code", 0);
 					JSONObject data = new JSONObject();
 					JSONArray ja = new JSONArray();
