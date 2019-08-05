@@ -22,7 +22,7 @@ import com.kunteng.cyria.dashboard.utils.CommonResult;
 import com.kunteng.cyria.dashboard.utils.RequestWrapper;
 
 //@Component
-@WebFilter(urlPatterns= {"/bashboards/*","/templates/*","/publish/*","/user/*","/projects/*","/material/*"}, filterName="HTTPBearerAuthorizeAttribute")
+@WebFilter(urlPatterns= {"/bashboards/*","/templates/*","/publish/*","/user/*","/projects/*","/material/*", "/system/geodata/*"}, filterName="HTTPBearerAuthorizeAttribute")
 public class HTTPBearerAuthorizeAttribute implements  Filter {
 	@Autowired
 	private AuthServiceClient client;
@@ -52,7 +52,6 @@ public class HTTPBearerAuthorizeAttribute implements  Filter {
 
 		HttpServletRequest httpRequest = (HttpServletRequest)request;
 		String path = httpRequest.getServletPath();
-		
 	//	RequestWrapper wrapper = new RequestWrapper(httpRequest);
 		
 	//	System.out.printf("path: %s, body: %s\n", path, wrapper.getBody());
@@ -76,6 +75,14 @@ public class HTTPBearerAuthorizeAttribute implements  Filter {
 				chain.doFilter(request, response);
 				return;
 			}
+
+		// no auth for test
+		if(path.contains("/system/geodata/")) {
+			//	chain.doFilter(wrapper, response);
+				chain.doFilter(request, response);
+				return;
+			}
+
 		String method = httpRequest.getMethod();
 		if("OPTIONS".equalsIgnoreCase(method)) {
 			httpResponse.setStatus(HttpServletResponse.SC_ACCEPTED);
