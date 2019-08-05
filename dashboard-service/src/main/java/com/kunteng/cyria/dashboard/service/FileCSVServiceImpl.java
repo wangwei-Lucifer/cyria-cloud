@@ -744,11 +744,13 @@ public class FileCSVServiceImpl implements FileCSVService {
 					dataseries.put("categories", categories);
 					JSONArray statistics= new JSONArray();
 					for (int i = 0; i < arrs.length; i++) {
+                                                int loopindex=0;
 						JSONObject jo = new JSONObject();
 						jo.put("name", arrs[i]);
 						JSONArray ja = new JSONArray();
 						for (String s : strsarr[i]) {
-							ja.add(Integer.parseInt(s));
+                                                        loopindex++;
+                                                        if(loopindex<=len){ja.add(Integer.parseInt(s));}
 						}
 						jo.put("data",ja);
 						statistics.add(jo);
@@ -771,11 +773,13 @@ public class FileCSVServiceImpl implements FileCSVService {
 					dataseries.put("categories", categories);
 					JSONArray statistics= new JSONArray();
 					for (int i = 0; i < arrs.length; i++) {
+                                                int loopindex=0;
 						JSONObject jo = new JSONObject();
 						jo.put("name", arrs[i]);
 						JSONArray ja = new JSONArray();
 						for (String s : strsarr[i]) {
-							ja.add(Double.parseDouble(s));
+                                                        loopindex++;
+							if(loopindex<=len){ja.add(Double.parseDouble(s));}
 						}
 						jo.put("value",ja);
 						statistics.add(jo);
