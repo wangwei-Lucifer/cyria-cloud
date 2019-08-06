@@ -42,7 +42,7 @@ public class Translation {
 		user = "";
 		project = "ungrouped";
 		template = "";
-		colors = new HashMap<String,Object>() {{put("name","配色1");put("value","['#8378ea', '#96bfff', '#37a2da', '#32c5e9', '#67e0e3', '#9fe6b8', '#ffdb5c', '#ff9f7f', '#fb7293', '#e062ae', '#e690d1', '#e7bcf3', '#9d96f4']");}};
+		colors = new HashMap<String,Object>() {{put("name","配色1");put("value",new String[] {"#8378ea", "#96bfff", "#37a2da", "#32c5e9", "#67e0e3", "#9fe6b8", "#ffdb5c", "#ff9f7f", "#fb7293", "#e062ae", "#e690d1", "#e7bcf3", "#9d96f4"});}};
 	}
 
 	public String getName(){
