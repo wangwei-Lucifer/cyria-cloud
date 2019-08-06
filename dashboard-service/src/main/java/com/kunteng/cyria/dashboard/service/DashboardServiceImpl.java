@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +131,9 @@ public class DashboardServiceImpl implements DashboardService {
 	public CommonResult createNewDashboard(String id, Translation translation){
 		log.info("translation=" + translation.toString());
 		log.info("project = "+ translation.getProject());
+		if(StringUtils.isBlank(translation.getName())) {
+			return new CommonResult().customFailed("大屏名字不能为空！");
+		}
 
 		if(!translation.getIsTemplate()) {
 			Dashboard dashboard = new Dashboard();
