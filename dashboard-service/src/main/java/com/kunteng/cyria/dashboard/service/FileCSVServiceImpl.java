@@ -33,6 +33,7 @@ import com.kunteng.cyria.dashboard.repository.RawCSVRepository;
 import com.kunteng.cyria.dashboard.utils.CityPos;
 import com.kunteng.cyria.dashboard.utils.CommonResult;
 import com.kunteng.cyria.dashboard.utils.Utils;
+import com.kunteng.cyria.dashboard.utils.CityPos;
 import com.opencsv.CSVReader;
 
 import lombok.extern.slf4j.Slf4j;
@@ -87,12 +88,12 @@ public class FileCSVServiceImpl implements FileCSVService {
 		return true;
 	}
 	
-	private static boolean isChinaProvince(String str) {
+	private static boolean isChinaCity(String str) {
 		if(str.isEmpty()) {
 			return false;
 		}else {
-			for(int i =0;i <tableProvinces.size(); i++) {
-				if(tableProvinces.get(i).indexOf(str)!= -1) {
+			for(int i =0;i < CityPos.posdata.length/3; i++) {
+				if(CityPos.posdata[3*i].indexOf(str)!= -1) {
 					return true;
 				}
 			}
@@ -327,7 +328,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 							result = isNumeric(data.get(i).get(s).get(1));
 							break;
 						case "position":
-							result = isChinaProvince(data.get(i).get(s).get(1));
+							result = isChinaCity(data.get(i).get(s).get(1));
 							break;
 						case "date":
 							result = isDateTime(data.get(i).get(s).get(1));
@@ -520,7 +521,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 							result = isNumeric(val);
 							break;
 						case "position":
-							result = isChinaProvince(val);
+							result = isChinaCity(val);
 							break;
 						case "data":
 							result = isDateTime(val);
