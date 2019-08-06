@@ -31,7 +31,7 @@ public class TemplateServiceImpl implements TemplateService {
 	@Override
 	public CommonResult createNewTemplate(Translation translation){
 		if(StringUtils.isBlank(translation.getName())) {
-			return new CommonResult().customFailed("模板名字不能为空！");
+			return new CommonResult().customFailed("模板名称不能为空！");
 		}
 		if(translation.getIsTemplate()) {
 			Template template = new Template();

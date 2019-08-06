@@ -132,7 +132,7 @@ public class DashboardServiceImpl implements DashboardService {
 		log.info("translation=" + translation.toString());
 		log.info("project = "+ translation.getProject());
 		if(StringUtils.isBlank(translation.getName())) {
-			return new CommonResult().customFailed("大屏名字不能为空！");
+			return new CommonResult().customFailed("大屏名称不能为空！");
 		}
 
 		if(!translation.getIsTemplate()) {
