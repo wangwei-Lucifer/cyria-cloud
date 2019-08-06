@@ -821,7 +821,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 				for (int i = 0; i < len; i++) {
 					JSONObject jo = new JSONObject();
 					//fill jo by forloop
-					for(int j=0;j<strsarr.length;j++) {
+					for(int j=0;j<len;j++) {
 						String vlx=strsarr[j].get(i);
 						jo.put("vl"+j, vlx);
 					}
