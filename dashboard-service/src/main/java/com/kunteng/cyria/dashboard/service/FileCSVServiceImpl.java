@@ -560,9 +560,9 @@ public class FileCSVServiceImpl implements FileCSVService {
                 ArrayList<Map<String,ArrayList<String>>> data=fv.getData();
                 for(Map<String,ArrayList<String>> mp : data){
                    ArrayList<String> slist=mp.get(rowtabname);
-                   String val=slist.get(1);
+                   if(slist!=null){String val=slist.get(1);
                    System.out.println("Val:" + val);
-                   strs.add(val);
+                   strs.add(val);}else{strs.add("");}
                 }
                 return strs;
         }
@@ -800,9 +800,9 @@ public class FileCSVServiceImpl implements FileCSVService {
 				strsarr[i]= getCsvRaw(fv, arrs[i]);
 			}
 			int len = strsarr[0].size();
-			if (len >= 12) {
+			/*if (len >= 12) {
 				len = 12;
-			}
+			}*/
 			JSONObject jsob = new JSONObject();
                         jsob.put("statusCode", 0);
 			if (type.equals("uuid9")) {//表格M:0的情况
