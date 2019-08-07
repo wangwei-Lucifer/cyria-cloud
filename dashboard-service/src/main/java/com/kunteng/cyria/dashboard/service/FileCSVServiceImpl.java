@@ -11,6 +11,7 @@ import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -820,7 +821,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 				//生成row数据
 				JSONArray rows = new JSONArray();
 				for (int i = 0; i < len; i++) {
-					JSONObject jo = new JSONObject();
+					JSONObject jo = new JSONObject(new LinkedHashMap());
 					//fill jo by forloop
 					for(int j=0;j<strsarr.length;j++) {
 						String vlx=strsarr[j].get(i);
