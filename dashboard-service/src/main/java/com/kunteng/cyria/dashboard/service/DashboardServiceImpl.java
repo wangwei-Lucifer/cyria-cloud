@@ -166,8 +166,10 @@ public class DashboardServiceImpl implements DashboardService {
 						dashboard.setWidget(template.getWidget());
 						dashboard.getConfig().setPage(true);
 					}
-					dashboard.setProject("ungrouped");
+					dashboard.setProject(translation.getProject());
 				}
+			}else {
+				dashboard.setProject(translation.getProject());
 			}
 			dashboard.getConfig().setTimestamp(new Date().getTime());
 			dashboard.getPublish().setStatus("unpublish");

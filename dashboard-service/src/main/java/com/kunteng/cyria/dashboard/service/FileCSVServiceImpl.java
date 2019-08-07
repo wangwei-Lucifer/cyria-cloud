@@ -11,6 +11,7 @@ import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,6 +121,10 @@ public class FileCSVServiceImpl implements FileCSVService {
 			
 			ArrayList<TitleCell> titleHeader = new ArrayList<TitleCell>();
 			String[] header = csvReader.readNext();
+			if(!checkIsRepeat(header)) {
+				return new CommonResult().customFailed("表头不能有重复项");
+			}
+			
 			for(int i=0; i < header.length; i++) {
 				TitleCell title = new TitleCell();
 				title.setTitle(header[i]);
@@ -392,6 +397,19 @@ public class FileCSVServiceImpl implements FileCSVService {
 		return list1.equals(list2);
 	}
 	
+	private static boolean checkIsRepeat(String[] title) {
+		HashSet<String> hashSet = new HashSet<String>();
+		for(int i=0;i<title.length;i++) {
+			hashSet.add(title[i]);
+		}
+		
+		if(hashSet.size() == title.length) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
 	public CommonResult updateCSVData(String hash, MultipartFile file) throws IOException {
 		/*if(!isCsv(file.getOriginalFilename())) {
 			return new CommonResult().customFailed("请选择CSV格式文件");
@@ -430,6 +448,10 @@ public class FileCSVServiceImpl implements FileCSVService {
 		
 		ArrayList<TitleCell> titleHeader = new ArrayList<TitleCell>();
 		String[] header = csvReader.readNext();
+		if(!checkIsRepeat(header)) {
+			return new CommonResult().customFailed("表头不能有重复项");
+		}
+		
 		for(int i=0; i < header.length; i++) {
 			TitleCell title = new TitleCell();
 			title.setTitle(header[i]);
