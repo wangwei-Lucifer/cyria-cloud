@@ -397,7 +397,7 @@ public class FileCSVServiceImpl implements FileCSVService {
 		}*/
 
 		String fileName1 = file.getOriginalFilename();
-		Decoder decoder = Base64.getDecoder();;
+		Decoder decoder = Base64.getDecoder();
 		byte[] bytes = decoder.decode(fileName1);
 		String fileName = new String(bytes);
 
