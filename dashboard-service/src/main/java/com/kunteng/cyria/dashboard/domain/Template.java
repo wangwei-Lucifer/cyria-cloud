@@ -5,7 +5,8 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import net.sf.json.JSONArray;
+//import net.sf.json.JSONArray;
+import com.alibaba.fastjson.JSONArray;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;

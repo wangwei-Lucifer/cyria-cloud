@@ -19,8 +19,10 @@ import com.kunteng.cyria.dashboard.repository.TemplateRepository;
 import com.kunteng.cyria.dashboard.utils.CommonResult;
 import com.kunteng.cyria.dashboard.utils.Utils;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+//import net.sf.json.JSONArray;
+//import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 @Service
 public class TemplateServiceImpl implements TemplateService {
@@ -86,7 +88,7 @@ public class TemplateServiceImpl implements TemplateService {
 	
 	@Override
 	public CommonResult updateTemplateById(String id, String tp) throws Exception  {
-		JSONObject jso = JSONObject.fromObject(tp);
+	/*	JSONObject jso = JSONObject.fromObject(tp);
 		Template template = templateRepository.findByHash(id);
 		if(jso.has("config")) {
 			JSONObject configObject = jso.getJSONObject("config");
@@ -98,6 +100,23 @@ public class TemplateServiceImpl implements TemplateService {
 			template.setWidget(widget);
 		}
 		if(jso.has("imgData")) {
+		//	template.setImgData(jso.getString("imgData"));
+			String imgUrl = Utils.createImage(jso.getString("imgData"),id);
+			template.setImgUrl(imgUrl);
+		}*/
+		
+		JSONObject jso = JSONObject.parseObject(tp);
+		Template template = templateRepository.findByHash(id);
+		if(jso.containsKey("config")) {
+			JSONObject configObject = jso.getJSONObject("config");
+			Config config = (Config)JSONObject.toJavaObject(configObject, Config.class);
+			template.setConfig(config);
+		}
+		if(jso.containsKey("widget")) {
+			JSONArray widget = jso.getJSONArray("widget");
+			template.setWidget(widget);
+		}
+		if(jso.containsKey("imgData")) {
 		//	template.setImgData(jso.getString("imgData"));
 			String imgUrl = Utils.createImage(jso.getString("imgData"),id);
 			template.setImgUrl(imgUrl);

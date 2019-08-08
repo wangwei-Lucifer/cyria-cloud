@@ -31,8 +31,10 @@ import com.kunteng.cyria.dashboard.repository.TemplateRepository;
 import com.kunteng.cyria.dashboard.utils.CommonResult;
 import com.kunteng.cyria.dashboard.utils.Utils;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+//import net.sf.json.JSONArray;
+//import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 @Service
 public class DashboardServiceImpl implements DashboardService {
@@ -243,13 +245,14 @@ public class DashboardServiceImpl implements DashboardService {
 	}
 
 	public CommonResult updateDashboardById(String id, String db) throws Exception{
-		JSONObject jso = JSONObject.fromObject(db);
+	//	JSONObject jso = JSONObject.fromObject(db);
+		JSONObject jso = JSONObject.parseObject(db);
 		Dashboard dashboard = dashboardRepository.findByHash(id);
 		if(dashboard == null) {
 			return new CommonResult().customFailed("查询数据库失败！");
 		}
 		
-		if(jso.has("config")) {
+	/*	if(jso.has("config")) {
 			JSONObject configObject = jso.getJSONObject("config");
 			Config config = (Config)JSONObject.toBean(configObject, Config.class);
 			dashboard.setConfig(config);
@@ -265,7 +268,26 @@ public class DashboardServiceImpl implements DashboardService {
 	//		dashboard.setImgData(jso.getString("imgData"));
 			dashboard.setImgUrl(imgUrl);
 			dashboard.getConfig().setTimestamp(new Date().getTime());
+		}*/
+		
+		if(jso.containsKey("config")) {
+			JSONObject configObject = jso.getJSONObject("config");
+			Config config = JSONObject.toJavaObject(configObject, Config.class);
+			dashboard.setConfig(config);
+			dashboard.getConfig().setTimestamp(new Date().getTime());
 		}
+		if(jso.containsKey("widget")) {
+			JSONArray widget = jso.getJSONArray("widget");
+			dashboard.setWidget(widget);
+			dashboard.getConfig().setTimestamp(new Date().getTime());
+		}
+		if(jso.containsKey("imgData")) {
+			String imgUrl = Utils.createImage(jso.getString("imgData"),id);
+	//		dashboard.setImgData(jso.getString("imgData"));
+			dashboard.setImgUrl(imgUrl);
+			dashboard.getConfig().setTimestamp(new Date().getTime());
+		}
+		
 		Dashboard result = dashboardRepository.save(dashboard);
 		return new CommonResult().success(result);
 	}
@@ -368,9 +390,11 @@ public class DashboardServiceImpl implements DashboardService {
 				downFile.createNewFile();
 			}
 			
-			JSONObject configJSON = JSONObject.fromObject(published.getConfig());
+		//	net.sf.json.JSONObject configJSON = net.sf.json.JSONObject.fromObject(published.getConfig());
+			JSONObject configJSON = (JSONObject) JSONObject.toJSON(published.getConfig());
 			String config = configJSON.toString();
-			JSONArray widgetJSON = JSONArray.fromObject(published.getWidget());
+		//	net.sf.json.JSONArray widgetJSON = net.sf.json.JSONArray.fromObject(published.getWidget());
+			JSONArray widgetJSON = (JSONArray) JSONArray.toJSON(published.getWidget());
 			String widget = widgetJSON.toString();
 			
 			PrintStream ps = new PrintStream(new FileOutputStream(downFile));
