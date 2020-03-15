@@ -6,8 +6,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Document(collection = "users")
 public class User implements UserDetails, Serializable {
@@ -33,7 +35,7 @@ public class User implements UserDetails, Serializable {
 //	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 //	@JoinTable(name="user_role", joinColumns=@JoinColumn(name="user_id",referencedColumnName="id",inverseJoinColumns=@JoinColumn(name="role_id",referencedColumnName="id")))
 	private List<Role> authorities;
-	
+
 	public User() {
 		
 	}

@@ -15,7 +15,7 @@ import java.util.Base64;
 import java.util.Base64.Decoder;
 
 public class Utils {
-	private static final String rootPath ="/app/static";
+	private static final String rootPath = "/Users/wangwei/install";//"/app/static";
 
 	private static final String dashboardPath = "/upload/dashboards/";
 	
