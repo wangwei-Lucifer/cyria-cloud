@@ -6,7 +6,7 @@ spring:
     config:
       uri: http://config:8888
       fail-fast: true
-      password: ${CONFIG_SERVICE_PASSWORD}
+      password: admin
       username: user
   mvc:
     static-path-patern: /static/**
