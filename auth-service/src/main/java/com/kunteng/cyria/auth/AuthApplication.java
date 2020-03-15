@@ -113,7 +113,7 @@ public class AuthApplication {
 					.scopes("ui")
 			.and()
 					.withClient("dashboard-service")
-					.secret(env.getProperty("DASHBOARD_SERVICE_PASSWORD"))
+					.secret("dashboard")
 					.authorizedGrantTypes("client_credentials", "refresh_token")
 					.scopes("server");
 			

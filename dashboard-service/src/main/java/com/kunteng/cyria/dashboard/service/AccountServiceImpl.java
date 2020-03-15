@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.kunteng.cyria.dashboard.domain.JWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +82,7 @@ public class AccountServiceImpl implements AccountService {
 		user.setUsername(account.getUsername());
 		user.setPassword(account.getPassword());
 		
-	//	JWT jwt = client.getToken("Basic ZGFzaGJvYXJkLXNlcnZpY2U6YWRtaW4=","password", account.getUsername(), account.getPassword());
+		//JWT jwt2 = client.getToken("Basic ZGFzaGJvYXJkLXNlcnZpY2U6YWRtaW4=","password", account.getUsername(), account.getPassword());
 		String jwt = client.login(user);
 		if(jwt == null) {
 			result.setCode(1);
